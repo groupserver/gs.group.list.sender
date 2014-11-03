@@ -13,20 +13,24 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
-from unittest import TestSuite, main as unittest_main
-from gs.group.list.sender.tests.headers import (
-    TestModifyHeadersFunction, TestHeaderModifier, )
-from gs.group.list.sender.tests.simpleadd import (TestStaticHeaders, )
-testCases = (TestModifyHeadersFunction, TestHeaderModifier,
-             TestStaticHeaders, )
+#from email.header import Header
+#from email.message import Message
+from unittest import TestCase
+from gs.group.list.sender.simpleadd import Precedence
+from .faux import (FauxGroup, FauxRequest)
 
 
-def load_tests(loader, tests, pattern):
-    suite = TestSuite()
-    for testClass in testCases:
-        tests = loader.loadTestsFromTestCase(testClass)
-        suite.addTests(tests)
-    return suite
+class TestStaticHeaders(TestCase):
+    'Test the headers that are static'
 
-if __name__ == '__main__':
-    unittest_main()
+    def test_precedence(self):
+        'Ensure the precedence header is static'
+        p = Precedence(FauxGroup, FauxRequest)
+        r = p.modify_header()
+        self.assertEqual('bulk', r)
+
+    def test_precedence_previous_data(self):
+        'Ensure the precedence header ignores its argument'
+        p = Precedence(FauxGroup, FauxRequest)
+        r = p.modify_header('wibble')
+        self.assertEqual('bulk', r)

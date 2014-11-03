@@ -144,7 +144,7 @@ The recipients of post is calculated as follows.
   + Add those addresses to the list of recipient addresses.
 
 Then reverse-sort the list, which groups people by email-address
-provider. Finally, send out email messages in batches of **FIX**
+provider. Finally, send out email messages in batches of 50.
 
 Resources
 =========
