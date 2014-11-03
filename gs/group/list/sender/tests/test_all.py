@@ -14,8 +14,9 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals
 from unittest import TestSuite, main as unittest_main
-from gs.group.list.sender.tests.headers import (TestModifyHeadersFunction)
-testCases = (TestModifyHeadersFunction, )
+from gs.group.list.sender.tests.headers import (
+    TestModifyHeadersFunction, TestHeaderModifier, )
+testCases = (TestModifyHeadersFunction, TestHeaderModifier, )
 
 
 def load_tests(loader, tests, pattern):

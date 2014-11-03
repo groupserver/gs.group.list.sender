@@ -13,7 +13,7 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
-from email import Header
+from email.header import Header
 from email.message import Message
 from email.parser import Parser
 import sys
@@ -45,7 +45,10 @@ class HeaderModifier(object):
             nv = adaptor.modify_header(oldValue)
             hv = Header(nv, 'utf-8')
             newValue = hv.encode()
-            email.add_header(name, newValue)
+            if name in email:
+                email.replace_header(name, newValue)
+            else:
+                email.add_header(name, newValue)
 
 
 STRING = basestring if (sys.version_info < (3, )) else str

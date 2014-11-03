@@ -13,9 +13,9 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
-from zope.component import getGlobalSiteManager
 from email.parser import Parser
 from zope.interface import Interface, implementer
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from gs.group.list.sender.interfaces import IEmailHeaderModifier
 
 
@@ -40,13 +40,30 @@ def get_email(subject):
 
 @implementer(IEmailHeaderModifier)
 class FauxXMailer(object):
+    'The fake X-Mailer header modifier'
 
     def __init__(self, group, request):
         pass
 
-    def modify_header(self, oldValue):
+    @staticmethod
+    def modify_header(oldValue):
         return 'gs.group.list.sender.tests.faux.FauxXMailer'
 
-gsm = getGlobalSiteManager()
-gsm.registerAdapter(FauxXMailer, (IFauxGroup, ), IEmailHeaderModifier,
-                    'X-Mailer')
+
+@implementer(IEmailHeaderModifier)
+class UFauxXMailer(FauxXMailer):
+    @staticmethod
+    def modify_header(oldValue):
+        return '\u1F604'
+
+
+@implementer(IEmailHeaderModifier)
+class UTF8FauxXMailer(FauxXMailer):
+    @staticmethod
+    def modify_header(oldValue):
+        return '\u1F604'.encode('utf-8')
+
+
+@implementer(IDefaultBrowserLayer)
+class FauxRequest(object):
+    'This is not a request'
