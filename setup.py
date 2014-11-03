@@ -15,7 +15,6 @@
 import codecs
 import os
 from setuptools import setup, find_packages
-import sys
 from version import get_version
 
 version = get_version()
@@ -30,7 +29,7 @@ install_requires = [
     'setuptools',
     'zope.cachedescriptors',
     'zope.component',
-    'zope.interface', 
+    'zope.interface',
     'gs.email', ]
 
 setup(name='gs.group.list.sender',
