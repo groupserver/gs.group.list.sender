@@ -35,6 +35,7 @@ class ReplyTo(Enum):
 
 
 class ReplyToHeader(SimpleAddHeader):
+    'The Reply-To header, which determines who gets the replies'
 
     @Lazy
     def replyTo(self):
