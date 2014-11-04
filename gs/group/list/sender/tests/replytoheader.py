@@ -15,14 +15,14 @@
 from __future__ import absolute_import, unicode_literals
 from mock import patch
 from unittest import TestCase
-from gs.group.list.sender.replytoheader import (ReplyToHeader, ReplyTo)
+from gs.group.list.sender.headers.replyto import (ReplyToHeader, ReplyTo)
 from .faux import (FauxGroup, FauxRequest, )
 
 
 class TestReplyToHeader(TestCase):
     'Test the reply-to header class'
 
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_reply_to_sender(self, IGSMailingListInfo):
         gp = IGSMailingListInfo.return_value.get_property
         gp.return_value = 'sender'
@@ -31,7 +31,7 @@ class TestReplyToHeader(TestCase):
         r = rth.replyTo
         self.assertEqual(ReplyTo.author, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_reply_to_both(self, IGSMailingListInfo):
         gp = IGSMailingListInfo.return_value.get_property
         gp.return_value = 'both'
@@ -40,7 +40,7 @@ class TestReplyToHeader(TestCase):
         r = rth.replyTo
         self.assertEqual(ReplyTo.both, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_reply_to_group(self, IGSMailingListInfo):
         gp = IGSMailingListInfo.return_value.get_property
         gp.return_value = 'group'
@@ -49,7 +49,7 @@ class TestReplyToHeader(TestCase):
         r = rth.replyTo
         self.assertEqual(ReplyTo.group, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_reply_to_group_none(self, IGSMailingListInfo):
         'Ensure that reply-to-group is the default'
         gp = IGSMailingListInfo.return_value.get_property
@@ -59,8 +59,8 @@ class TestReplyToHeader(TestCase):
         r = rth.replyTo
         self.assertEqual(ReplyTo.group, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_modify_author(self, IGSMailingListInfo, IGSGroupInfo):
         gp = IGSMailingListInfo.return_value.get_property
         gp.side_effect = ['sender', 'faux@groups.example.com']
@@ -70,8 +70,8 @@ class TestReplyToHeader(TestCase):
 
         self.assertEqual('person@example.com', r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_modify_group(self, IGSMailingListInfo, IGSGroupInfo):
         gp = IGSMailingListInfo.return_value.get_property
         gp.side_effect = ['group', 'faux@groups.example.com']
@@ -81,8 +81,8 @@ class TestReplyToHeader(TestCase):
 
         self.assertEqual('faux@groups.example.com', r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_modify_both(self, IGSMailingListInfo, IGSGroupInfo):
         gp = IGSMailingListInfo.return_value.get_property
         gp.side_effect = ['both', 'faux@groups.example.com']

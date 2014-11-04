@@ -15,7 +15,7 @@
 from __future__ import absolute_import, unicode_literals
 from mock import patch
 from unittest import TestCase
-from gs.group.list.sender.simpleadd import (
+from gs.group.list.sender.headers.simpleadd import (
     Precedence, XMailer, Sender, ListUnsubscribe, ListHelp, ListSubscribe,
     ListPost, ListOwner, ListArchive)
 from .faux import (FauxGroup, FauxRequest, FauxGroupInfo,
@@ -45,8 +45,8 @@ class TestStaticHeaders(TestCase):
                    '(gs.group.list.send)'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_sender(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the Sender header'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -57,8 +57,8 @@ class TestStaticHeaders(TestCase):
         expected = 'Faux Group <faux@groups.example.com>'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_list_help(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the ``List-Help`` header'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -69,8 +69,8 @@ class TestStaticHeaders(TestCase):
         expected = '<http://groups.example.com/help/>'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_list_unsubscribe(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the ``List-Unsubscribe`` header'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -82,8 +82,8 @@ class TestStaticHeaders(TestCase):
                    '<mailto:faux@groups.example.com?Subject=Unsubscribe>'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_list_subscribe(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the ``List-Subscribe`` header'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -95,8 +95,8 @@ class TestStaticHeaders(TestCase):
                    '<mailto:faux@groups.example.com?Subject=Subscribe>'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_list_post(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the ``List-Post`` header'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -107,8 +107,8 @@ class TestStaticHeaders(TestCase):
         expected = '<mailto:faux@groups.example.com>'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_list_owner(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the ``List-Owner`` header'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -119,8 +119,8 @@ class TestStaticHeaders(TestCase):
         expected = '<mailto:support@groups.example.com>'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_list_archive(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the ``List-Archive`` header'''
         IGSGroupInfo.return_value = FauxGroupInfo()

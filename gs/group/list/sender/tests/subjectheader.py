@@ -15,7 +15,7 @@
 from __future__ import absolute_import, unicode_literals
 from mock import patch
 from unittest import TestCase
-from gs.group.list.sender.subjectheader import (SubjectHeader)
+from gs.group.list.sender.headers.subject import (SubjectHeader)
 from .faux import (FauxGroup, FauxRequest, FauxGroupInfo,
                    FauxMailingListInfo)
 
@@ -68,8 +68,8 @@ class TestSubjectHeaders(TestCase):
         r = sh.strip_subject('   [faux] I   am a fish', 'faux')
         self.assertEqual('I am a fish', r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_sender(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the Sender header with a new subject'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -80,8 +80,8 @@ class TestSubjectHeaders(TestCase):
         expected = '[faux] I am a fish'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_sender_re(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the Sender header with an Re: subject'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -92,8 +92,8 @@ class TestSubjectHeaders(TestCase):
         expected = 'Re: [faux] I am a fish'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_sender_group(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the Sender header with a subject that contains the group
 name already'''
@@ -105,8 +105,8 @@ name already'''
         expected = '[faux] I am a fish'
         self.assertEqual(expected, r)
 
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_sender_group_re(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the Sender header with a subject that contains an Re: and
 the group name'''
