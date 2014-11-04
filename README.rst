@@ -50,11 +50,11 @@ present in simple person-to-person email messages.
 There are six headers specific to mailing lists, which are
 defined in `RFC 2369`_:
 
+* ``List-Help``: How to get help. It points to the Help pages for
+  the site.
 * ``List-Unsubscribe``: The most important of the ``list-``
   headers, this header contains a ``mailto`` for the Unsubscribe
   command, to get a person out of a group.
-* ``List-Help``: How to get help. It points to the support
-  email-address.
 * ``List-Subscribe``: A ``mailto`` for subscribing to the group.
 * ``List-Post``: A ``mailto`` for posting to the group. Used by
   the *Reply* button in some email clients.

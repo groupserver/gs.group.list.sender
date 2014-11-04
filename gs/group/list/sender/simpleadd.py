@@ -71,6 +71,15 @@ the group.
         return retval
 
 
+class ListHelp(SimpleAddHeader):
+    '''A URL pointing to the Help pages, described in `RFC 2369`_.
+
+.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.1'''
+    def modify_header(self, *args):
+        retval = '<{0}/help/>'.format(self.groupInfo.siteInfo.url)
+        return retval
+
+
 class ListUnsubscribe(SimpleAddHeader):
     '''A ``mailto:`` pointing to the Unsubscribe email address, described
 in `RFC 2369`_
@@ -84,15 +93,6 @@ in `RFC 2369`_
         addr = 'mailto:{0}?Subject=Unsubscribe'.format(emailAddr)
 
         retval = formataddr((desc, addr))
-        return retval
-
-
-class ListHelp(SimpleAddHeader):
-    '''A URL pointing to the Help pages, described in `RFC 2369`_.
-
-.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.1'''
-    def modify_header(self, *args):
-        retval = '<{0}/help/>'.format(self.groupInfo.siteInfo.url)
         return retval
 
 

@@ -59,6 +59,18 @@ class TestStaticHeaders(TestCase):
 
     @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
+    def test_list_help(self, IGSMailingListInfo, IGSGroupInfo):
+        '''Test the ``List-Help`` header'''
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
+
+        lh = ListHelp(FauxGroup, FauxRequest)
+        r = lh.modify_header()
+        expected = '<http://groups.example.com/help/>'
+        self.assertEqual(expected, r)
+
+    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
     def test_list_unsubscribe(self, IGSMailingListInfo, IGSGroupInfo):
         '''Test the ``List-Unsubscribe`` header'''
         IGSGroupInfo.return_value = FauxGroupInfo()
@@ -68,18 +80,6 @@ class TestStaticHeaders(TestCase):
         r = lu.modify_header()
         expected = 'Leave Faux Group '\
                    '<mailto:faux@groups.example.com?Subject=Unsubscribe>'
-        self.assertEqual(expected, r)
-
-    @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
-    @patch('gs.group.list.sender.simpleadd.IGSMailingListInfo')
-    def test_list_help(self, IGSMailingListInfo, IGSGroupInfo):
-        '''Test the ``List-Help`` header'''
-        IGSGroupInfo.return_value = FauxGroupInfo()
-        IGSMailingListInfo.return_value = FauxMailingListInfo()
-
-        lh = ListHelp(FauxGroup, FauxRequest)
-        r = lh.modify_header()
-        expected = '<http://groups.example.com/help/>'
         self.assertEqual(expected, r)
 
     @patch('gs.group.list.sender.simpleadd.IGSGroupInfo')
