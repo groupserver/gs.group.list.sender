@@ -67,4 +67,11 @@
     provides=".interfaces.IEmailHeaderModifier"
     factory=".simpleadd.ListArchive" />
 
+  <adapter
+    name="Subject"
+    for="gs.group.base.interfaces.IGSGroupMarker
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+    provides=".interfaces.IEmailHeaderModifier"
+    factory=".subjectheader.SubjectHeader" />
+
 </configure>

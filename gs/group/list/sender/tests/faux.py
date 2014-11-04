@@ -41,10 +41,20 @@ class FauxGroupInfo(object):
     url = 'http://groups.example.com/groups/faux'
     siteInfo = FauxSiteInfo()
 
+    def get_property(*args):
+        return 'faux'
+
+
+class FauxMList(object):
+    def title_or_id(*args):
+        return 'faux mlist'
+
 
 class FauxMailingListInfo(object):
     def get_property(self, *args):
         return 'faux@groups.example.com'
+
+    mlist = FauxMList()
 
 
 def get_email(subject):

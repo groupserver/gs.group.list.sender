@@ -17,8 +17,9 @@ from unittest import TestSuite, main as unittest_main
 from gs.group.list.sender.tests.modifyheaders import (
     TestModifyHeadersFunction, TestHeaderModifier, )
 from gs.group.list.sender.tests.simpleadd import (TestStaticHeaders, )
+from gs.group.list.sender.tests.subjectheader import (TestSubjectHeaders, )
 testCases = (TestModifyHeadersFunction, TestHeaderModifier,
-             TestStaticHeaders, )
+             TestStaticHeaders, TestSubjectHeaders, )
 
 
 def load_tests(loader, tests, pattern):
