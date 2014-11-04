@@ -16,7 +16,7 @@ from __future__ import absolute_import, unicode_literals
 from mock import patch
 from unittest import TestCase
 from gs.group.list.sender.headers.subject import (SubjectHeader)
-from .faux import (FauxGroup, FauxRequest, FauxGroupInfo,
+from .faux import (FauxGroup, FauxRequest, FauxGroupInfo, get_email,
                    FauxMailingListInfo)
 
 
@@ -76,7 +76,8 @@ class TestSubjectHeaders(TestCase):
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        r = sh.modify_header('I am a fish')
+        e = get_email('I am a fish')
+        r = sh.modify_header(e)
         expected = '[faux] I am a fish'
         self.assertEqual(expected, r)
 
@@ -88,7 +89,8 @@ class TestSubjectHeaders(TestCase):
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        r = sh.modify_header('Re: I am a fish')
+        e = get_email('Re: I am a fish')
+        r = sh.modify_header(e)
         expected = 'Re: [faux] I am a fish'
         self.assertEqual(expected, r)
 
@@ -101,7 +103,8 @@ name already'''
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        r = sh.modify_header('[faux] I am a fish')
+        e = get_email('[faux] I am a fish')
+        r = sh.modify_header(e)
         expected = '[faux] I am a fish'
         self.assertEqual(expected, r)
 
@@ -114,6 +117,7 @@ the group name'''
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        r = sh.modify_header('Re: [faux] I am a fish')
+        e = get_email('Re: [faux] I am a fish')
+        r = sh.modify_header(e)
         expected = 'Re: [faux] I am a fish'
         self.assertEqual(expected, r)

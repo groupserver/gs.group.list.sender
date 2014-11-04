@@ -13,6 +13,7 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
+from email.utils import parseaddr
 from enum import Enum
 from zope.cachedescriptors.property import Lazy
 from .simpleadd import SimpleAddHeader
@@ -46,13 +47,15 @@ class ReplyToHeader(SimpleAddHeader):
             retval = ReplyTo.group
         return retval
 
-    def modify_header(self, replyTo):
+    def modify_header(self, email):
+        authorReplyTo = parseaddr(email.get('Reply-To',
+                                  email.get('From')))[1]
+        groupReplyTo = parseaddr(self.listInfo.get_property('mailto'))[1]
         if self.replyTo == ReplyTo.author:
-            retval = replyTo
+            retval = authorReplyTo
         elif self.replyTo == ReplyTo.group:
-            retval = self.listInfo.get_property('mailto', replyTo)
+            retval = groupReplyTo
         else:
-            r = '{author}, {group}'
-            retval = r.format(author=replyTo,
-                              group=self.listInfo.get_property('mailto'))
+            addrs = [a for a in [authorReplyTo, groupReplyTo] if a]
+            retval = ', '.join(addrs)
         return retval

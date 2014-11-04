@@ -16,7 +16,7 @@ from __future__ import absolute_import, unicode_literals
 from mock import patch
 from unittest import TestCase
 from gs.group.list.sender.headers.replyto import (ReplyToHeader, ReplyTo)
-from .faux import (FauxGroup, FauxRequest, )
+from .faux import (FauxGroup, FauxRequest, get_email, )
 
 
 class TestReplyToHeader(TestCase):
@@ -63,21 +63,23 @@ class TestReplyToHeader(TestCase):
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_modify_author(self, IGSMailingListInfo, IGSGroupInfo):
         gp = IGSMailingListInfo.return_value.get_property
-        gp.side_effect = ['sender', 'faux@groups.example.com']
+        gp.side_effect = ['faux@groups.example.com', 'sender']
 
         rth = ReplyToHeader(FauxGroup, FauxRequest)
-        r = rth.modify_header('person@example.com')
+        e = get_email('Faux')
+        r = rth.modify_header(e)
 
-        self.assertEqual('person@example.com', r)
+        self.assertEqual('member@example.com', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_modify_group(self, IGSMailingListInfo, IGSGroupInfo):
         gp = IGSMailingListInfo.return_value.get_property
-        gp.side_effect = ['group', 'faux@groups.example.com']
+        gp.side_effect = ['faux@groups.example.com', 'group']
 
         rth = ReplyToHeader(FauxGroup, FauxRequest)
-        r = rth.modify_header('person@example.com')
+        e = get_email('Faux')
+        r = rth.modify_header(e)
 
         self.assertEqual('faux@groups.example.com', r)
 
@@ -85,9 +87,10 @@ class TestReplyToHeader(TestCase):
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
     def test_modify_both(self, IGSMailingListInfo, IGSGroupInfo):
         gp = IGSMailingListInfo.return_value.get_property
-        gp.side_effect = ['both', 'faux@groups.example.com']
+        gp.side_effect = ['faux@groups.example.com', 'both']
 
         rth = ReplyToHeader(FauxGroup, FauxRequest)
-        r = rth.modify_header('person@example.com')
+        e = get_email('Faux')
+        r = rth.modify_header(e)
 
-        self.assertEqual('person@example.com, faux@groups.example.com', r)
+        self.assertEqual('member@example.com, faux@groups.example.com', r)

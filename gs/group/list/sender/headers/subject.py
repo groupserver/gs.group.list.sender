@@ -25,7 +25,8 @@ class SubjectHeader(SimpleAddHeader):
     annoyingCharsL = annoyingChars + '\u202A\u202D'
     annoyingCharsR = annoyingChars + '\u202B\u202E'
 
-    def modify_header(self, subject):
+    def modify_header(self, email):
+        subject = email['Subject']
         listTitle = to_unicode_or_bust(self.groupInfo.get_property(
             'short_name', self.listInfo.mlist.title_or_id()))
         s = to_unicode_or_bust(subject)

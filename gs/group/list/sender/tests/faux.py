@@ -60,7 +60,7 @@ class FauxMailingListInfo(object):
 def get_email(subject):
     retval = Parser().parsestr(
         'From: <member@example.com>\n'
-        'To: <group@example.com>\n'
+        'To: <faux@groups.example.com>\n'
         'Subject: {0}\n'
         '\n'
         'Body would go here\n'.format(subject))
@@ -75,21 +75,21 @@ class FauxXMailer(object):
         pass
 
     @staticmethod
-    def modify_header(oldValue):
+    def modify_header(*args):
         return 'gs.group.list.sender.tests.faux.FauxXMailer'
 
 
 @implementer(IEmailHeaderModifier)
 class UFauxXMailer(FauxXMailer):
     @staticmethod
-    def modify_header(oldValue):
+    def modify_header(*args):
         return '\u1F604'
 
 
 @implementer(IEmailHeaderModifier)
 class UTF8FauxXMailer(FauxXMailer):
     @staticmethod
-    def modify_header(oldValue):
+    def modify_header(*args):
         return '\u1F604'.encode('utf-8')
 
 
