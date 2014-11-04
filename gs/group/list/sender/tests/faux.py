@@ -28,6 +28,25 @@ class FauxGroup(object):
     'This is not a group'
 
 
+class FauxSiteInfo(object):
+    name = 'Faux Site'
+    url = 'http://groups.example.com'
+
+    def get_support_email(*args):
+        return 'support@groups.example.com'
+
+
+class FauxGroupInfo(object):
+    name = 'Faux Group'
+    url = 'http://groups.example.com/groups/faux'
+    siteInfo = FauxSiteInfo()
+
+
+class FauxMailingListInfo(object):
+    def get_property(self, *args):
+        return 'faux@groups.example.com'
+
+
 def get_email(subject):
     retval = Parser().parsestr(
         'From: <member@example.com>\n'
