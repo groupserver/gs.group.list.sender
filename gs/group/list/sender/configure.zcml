@@ -72,12 +72,19 @@
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".headers.subjectheader.SubjectHeader" />
+    factory=".headers.subject.SubjectHeader" />
 
   <adapter
     name="Reply-To"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".headers.replytoheader.ReplyToHeader" />
+    factory=".headers.replyto.ReplyToHeader" />
+
+  <adapter
+    name="From"
+    for="gs.group.base.interfaces.IGSGroupMarker
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+    provides=".interfaces.IEmailHeaderModifier"
+    factory=".headers.from.FromHeader" />
 </configure>
