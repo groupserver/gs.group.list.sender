@@ -20,7 +20,8 @@ from mock import patch
 from unittest import TestCase
 from zope.component import getGlobalSiteManager
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from gs.group.list.sender.headers import (modify_headers, HeaderModifier)
+from gs.group.list.sender.modifyheaders import (modify_headers,
+                                                HeaderModifier)
 from gs.group.list.sender.interfaces import IEmailHeaderModifier
 from .faux import (FauxGroup, IFauxGroup, get_email, FauxRequest,
                    FauxXMailer, UFauxXMailer, UTF8FauxXMailer)

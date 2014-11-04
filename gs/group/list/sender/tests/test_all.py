@@ -14,7 +14,7 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals
 from unittest import TestSuite, main as unittest_main
-from gs.group.list.sender.tests.headers import (
+from gs.group.list.sender.tests.modifyheaders import (
     TestModifyHeadersFunction, TestHeaderModifier, )
 from gs.group.list.sender.tests.simpleadd import (TestStaticHeaders, )
 testCases = (TestModifyHeadersFunction, TestHeaderModifier,
