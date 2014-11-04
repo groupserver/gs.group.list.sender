@@ -9,75 +9,75 @@
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.Precedence" />
+    factory=".headers.simpleadd.Precedence" />
 
   <adapter
     name="X-Mailer"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.XMailer" />
+    factory=".headers.simpleadd.XMailer" />
 
   <adapter
     name="Sender"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.Sender" />
+    factory=".headers.simpleadd.Sender" />
 
   <adapter
     name="List-Help"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.ListHelp" />
+    factory=".headers.simpleadd.ListHelp" />
 
   <adapter
     name="List-Unsubscribe"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.ListUnsubscribe" />
+    factory=".headers.simpleadd.ListUnsubscribe" />
 
   <adapter
     name="List-Subscribe"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.ListSubscribe" />
+    factory=".headers.simpleadd.ListSubscribe" />
 
   <adapter
     name="List-Post"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.ListPost" />
+    factory=".headers.simpleadd.ListPost" />
 
   <adapter
     name="List-Owner"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.ListOwner" />
+    factory=".headers.simpleadd.ListOwner" />
 
   <adapter
     name="List-Archive"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".simpleadd.ListArchive" />
+    factory=".headers.simpleadd.ListArchive" />
 
   <adapter
     name="Subject"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".subjectheader.SubjectHeader" />
+    factory=".headers.subjectheader.SubjectHeader" />
 
   <adapter
     name="Reply-To"
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".replytoheader.ReplyToHeader" />
+    factory=".headers.replytoheader.ReplyToHeader" />
 </configure>
