@@ -18,8 +18,9 @@ from gs.group.list.sender.tests.modifyheaders import (
     TestModifyHeadersFunction, TestHeaderModifier, )
 from gs.group.list.sender.tests.simpleadd import (TestStaticHeaders, )
 from gs.group.list.sender.tests.subjectheader import (TestSubjectHeaders, )
+from gs.group.list.sender.tests.replytoheader import TestReplyToHeader
 testCases = (TestModifyHeadersFunction, TestHeaderModifier,
-             TestStaticHeaders, TestSubjectHeaders, )
+             TestStaticHeaders, TestSubjectHeaders, TestReplyToHeader, )
 
 
 def load_tests(loader, tests, pattern):

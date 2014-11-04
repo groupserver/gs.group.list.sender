@@ -74,4 +74,10 @@
     provides=".interfaces.IEmailHeaderModifier"
     factory=".subjectheader.SubjectHeader" />
 
+  <adapter
+    name="Reply-To"
+    for="gs.group.base.interfaces.IGSGroupMarker
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+    provides=".interfaces.IEmailHeaderModifier"
+    factory=".replytoheader.ReplyToHeader" />
 </configure>

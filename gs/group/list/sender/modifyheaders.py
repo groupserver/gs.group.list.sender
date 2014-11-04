@@ -16,6 +16,7 @@ from __future__ import absolute_import, unicode_literals
 from email.header import Header
 from email.message import Message
 from email.parser import Parser
+from email.utils import parseaddr
 import sys
 from zope.component import getGlobalSiteManager
 from gs.core import to_unicode_or_bust
@@ -38,6 +39,11 @@ class HeaderModifier(object):
 :param email: The email message to modify.
 :type email: :class:`email.message.Message`
 :returns: Nothing'''
+
+        # Hack.
+        # TODO: Ponder
+        email['Reply-To'] = parseaddr(email['From'])[1]
+
         gsm = getGlobalSiteManager()
         for name, adaptor in gsm.getAdapters((self.group, self.request),
                                              IEmailHeaderModifier):
