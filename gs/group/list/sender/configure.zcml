@@ -86,5 +86,5 @@
     for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
-    factory=".headers.from.FromHeader" />
+    factory=".headers.frm.FromHeader" />
 </configure>

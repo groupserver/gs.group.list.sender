@@ -50,13 +50,13 @@ class FromHeader(SimpleAddHeader):
         return retval
 
     @staticmethod
-    def get_anon_address(self, mbox, host, domain):
+    def get_anon_address(mbox, host, domain):
             r = 'anon-{mbox}-at-{host}@{domain}'
             h = host.replace('.', '-')
             retval = r.format(mbox=mbox, host=h, domain=domain)
             return retval
 
-    def set_formally_from(self, email, origHost, dmarcPolicy):
+    def set_formally_from(self, email):
         "Set the old From header to 'X-gs-formerly-from'"
         originalFromAddr = parseaddr(email['From'])
         oldName = to_unicode_or_bust(originalFromAddr[0])
@@ -64,9 +64,6 @@ class FromHeader(SimpleAddHeader):
         oldEncodedName = oldHeaderName.encode()
         oldFrom = formataddr((oldEncodedName, originalFromAddr[1]))
         email.add_header('X-GS-Formerly-From', oldFrom)
-        m = 'Rewriting From address <{0}> because of DMARC settings '\
-            'for "{1}" ({2})'
-        log.info(m.format(originalFromAddr, origHost, dmarcPolicy))
 
     def get_best_name(self, origName, user):
         'Pick the "best" name, using length as a proxy for "best"'
@@ -86,7 +83,10 @@ class FromHeader(SimpleAddHeader):
 
         if (dmarcPolicy in self.actualPolicies):
             self.set_formally_from(email, origHost, dmarcPolicy)
-            # Create a new From address from the list address
+            m = 'Rewriting From address <{0}> because of DMARC settings '\
+                'for "{1}" ({2})'
+            log.info(m.format(originalFromAddr[1], origHost, dmarcPolicy))
+
             user = self.acl_users.get_userByEmail(originalFromAddr[1])
             listMailto = self.listInfo.get_property('mailto')
             domain = parseaddr(listMailto)[1].split('@')[1]
