@@ -13,17 +13,86 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
-from mock import patch
+from email.utils import parseaddr
+from mock import patch, MagicMock
 from unittest import TestCase
+from gs.dmarc import ReceiverPolicy
 from gs.group.list.sender.headers.frm import FromHeader
-from .faux import (FauxGroup, FauxRequest, get_email, )
+from .faux import (FauxGroup, FauxRequest, get_email, FauxUserInfo)
 
 
 class TestFromHeader(TestCase):
     'Test the From-header class'
 
-    def test_rget_anon_address(self):
+    def test_get_anon_address(self):
         fh = FromHeader(FauxGroup, FauxRequest)
         r = fh.get_anon_address('person', 'example.com',
                                 'groups.example.com')
         self.assertEqual('anon-person-at-example-com@groups.example.com', r)
+
+    def test_get_user_address(self):
+        user = MagicMock()
+        gid = user.getId
+        gid.return_value = '0a1b2c3d'
+
+        fh = FromHeader(FauxGroup, FauxRequest)
+        r = fh.get_user_address(user, 'groups.example.com')
+        self.assertEqual('member-0a1b2c3d@groups.example.com', r)
+
+    def test_set_formally_from(self):
+        e = get_email('Faux')
+        fh = FromHeader(FauxGroup, FauxRequest)
+        fh.set_formally_from(e)
+
+        self.assertIn('X-GS-Formerly-From', e)
+        f = parseaddr(e['From'])[1]
+        ff = parseaddr(e['X-GS-Formerly-From'])[1]
+        self.assertEqual(f, ff)
+
+    def test_get_best_name_no_usr(self):
+        'Get the best name when there is no user'
+        fh = FromHeader(FauxGroup, FauxRequest)
+        r = fh.get_best_name('A. B. Member', None)
+        self.assertEqual('A. B. Member', r)
+
+    @patch('gs.group.list.sender.headers.frm.createObject')
+    def test_get_best_name_orig_long(self, createObject):
+        'Get the best name when the original is the longest'
+        u = FauxUserInfo()
+        u.name = 'A. Member'
+        createObject.return_value = u
+
+        fh = FromHeader(FauxGroup, FauxRequest)
+        r = fh.get_best_name('A. B. Member', MagicMock())
+        self.assertEqual('A. B. Member', r)
+
+    @patch('gs.group.list.sender.headers.frm.createObject')
+    def test_get_best_name_usr_long(self, createObject):
+        'Get the best name when the FN is the longest'
+        u = FauxUserInfo()
+        u.name = 'A. B. Member'
+        createObject.return_value = u
+
+        fh = FromHeader(FauxGroup, FauxRequest)
+        r = fh.get_best_name('A. Member', MagicMock())
+        self.assertEqual('A. B. Member', r)
+
+    @patch.object(FromHeader, 'get_dmarc_policy_for_host')
+    def test_dmarc_no_dmarc(self, gdpfh):
+        'Test that everything is unmodified if there is no DMARC on'
+        gdpfh.return_value = ReceiverPolicy.noDmarc
+
+        fh = FromHeader(FauxGroup, FauxRequest)
+        e = get_email('Faux')
+        r = fh.modify_header(e)
+        self.assertEqual(e['From'], r)
+
+    @patch.object(FromHeader, 'get_dmarc_policy_for_host')
+    def test_dmarc_none(self, gdpfh):
+        'Test that everything is unmodified if the DMARC policy is ``none``'
+        gdpfh.return_value = ReceiverPolicy.none
+
+        fh = FromHeader(FauxGroup, FauxRequest)
+        e = get_email('Faux')
+        r = fh.modify_header(e)
+        self.assertEqual(e['From'], r)

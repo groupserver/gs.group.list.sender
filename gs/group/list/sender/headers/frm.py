@@ -43,10 +43,8 @@ class FromHeader(SimpleAddHeader):
         return retval
 
     def get_user_address(self, user, domain):
-        userInfo = createObject('groupserver.UserFromId', self.context,
-                                user.getId())
-        r = 'member-{userInfo.id}@{domain}'
-        retval = r.format(userInfo=userInfo, domain=domain)
+        r = 'member-{userId}@{domain}'
+        retval = r.format(userId=user.getId(), domain=domain)
         return retval
 
     @staticmethod
@@ -56,7 +54,8 @@ class FromHeader(SimpleAddHeader):
             retval = r.format(mbox=mbox, host=h, domain=domain)
             return retval
 
-    def set_formally_from(self, email):
+    @staticmethod
+    def set_formally_from(email):
         "Set the old From header to 'X-gs-formerly-from'"
         originalFromAddr = parseaddr(email['From'])
         oldName = to_unicode_or_bust(originalFromAddr[0])

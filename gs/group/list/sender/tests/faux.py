@@ -57,6 +57,10 @@ class FauxMailingListInfo(object):
     mlist = FauxMList()
 
 
+class FauxUserInfo(object):
+    name = 'A. B. Member'
+
+
 def get_email(subject):
     retval = Parser().parsestr(
         'From: <member@example.com>\n'
