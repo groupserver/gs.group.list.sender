@@ -96,3 +96,67 @@ class TestFromHeader(TestCase):
         e = get_email('Faux')
         r = fh.modify_header(e)
         self.assertEqual(e['From'], r)
+
+    def test_dmarc_reject_anon(self):
+        '''Test that the address is rewritten for Anon when posting from a
+domain controlled by DMARC-reject'''
+        r, e = self.dmarc_modify_header(None, ReceiverPolicy.reject)
+
+        self.assertIn('X-GS-Formerly-From', e)
+        self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
+        self.assertEqual('anon-member-at-example-com@groups.example.com', r)
+
+    def test_dmarc_reject_user(self):
+        '''Test that the address is rewritten for a member when posting
+from a domain controlled by DMARC-reject'''
+        user = MagicMock()
+        user.getId.return_value = 'a0b1c2'
+        r, e = self.dmarc_modify_header(user, ReceiverPolicy.reject)
+
+        self.assertIn('X-GS-Formerly-From', e)
+        self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
+        expected = '"A. B. Member" <member-a0b1c2@groups.example.com>'
+        self.assertEqual(expected, r)
+
+    def test_dmarc_quarantine_anon(self):
+        '''Test that the address is rewritten for Anon when posting from a
+domain controlled by DMARC-quarantine'''
+        r, e = self.dmarc_modify_header(None, ReceiverPolicy.quarantine)
+
+        self.assertIn('X-GS-Formerly-From', e)
+        self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
+        self.assertEqual('anon-member-at-example-com@groups.example.com', r)
+
+    def test_dmarc_quarantine_user(self):
+        '''Test that the address is rewritten for a member when posting
+from a domain controlled by DMARC-quarantine'''
+        user = MagicMock()
+        user.getId.return_value = 'a0b1c2'
+        r, e = self.dmarc_modify_header(user, ReceiverPolicy.quarantine)
+
+        self.assertIn('X-GS-Formerly-From', e)
+        self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
+        expected = '"A. B. Member" <member-a0b1c2@groups.example.com>'
+        self.assertEqual(expected, r)
+
+    @patch('gs.group.list.sender.headers.frm.createObject')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    @patch.object(FromHeader, 'get_user')
+    @patch.object(FromHeader, 'get_dmarc_policy_for_host')
+    def dmarc_modify_header(self, user, dmarc, gdpfh, get_user,
+                            IGSMailingListInfo, IGSGroupInfo, createObject):
+        gdpfh.return_value = dmarc
+        u = MagicMock()
+        u.getId.return_value = 'a0b1c2'
+        get_user.return_value = user
+        IGSMailingListInfo.return_value.get_property.return_value = \
+            'faux@groups.example.com'
+        u = FauxUserInfo()
+        u.name = 'A. B. Member'
+        createObject.return_value = u
+
+        fh = FromHeader(FauxGroup, FauxRequest)
+        e = get_email('Faux')
+        r = fh.modify_header(e)
+        return (r, e)

@@ -17,7 +17,6 @@ from email.header import Header
 from email.utils import (parseaddr, formataddr)
 from logging import getLogger
 log = getLogger('gs.group.list.sender.header.from')
-from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from gs.cache import cache
 from gs.core import to_unicode_or_bust
@@ -36,10 +35,10 @@ class FromHeader(SimpleAddHeader):
         retval = lookup_receiver_policy(host)
         return retval
 
-    @Lazy
-    def acl_users(self):
+    def get_user(self, email):
         siteRoot = self.context.site_root()
-        retval = siteRoot.acl_users
+        acl_users = siteRoot.acl_users
+        retval = acl_users.get_userByEmail(email)
         return retval
 
     def get_user_address(self, user, domain):
@@ -81,12 +80,12 @@ class FromHeader(SimpleAddHeader):
         dmarcPolicy = self.get_dmarc_policy_for_host(origHost)
 
         if (dmarcPolicy in self.actualPolicies):
-            self.set_formally_from(email, origHost, dmarcPolicy)
+            self.set_formally_from(email)
             m = 'Rewriting From address <{0}> because of DMARC settings '\
                 'for "{1}" ({2})'
             log.info(m.format(originalFromAddr[1], origHost, dmarcPolicy))
 
-            user = self.acl_users.get_userByEmail(originalFromAddr[1])
+            user = self.get_user(originalFromAddr[1])
             listMailto = self.listInfo.get_property('mailto')
             domain = parseaddr(listMailto)[1].split('@')[1]
             if (user is not None):  # Create a new From using the user-ID
