@@ -17,12 +17,12 @@ from zope.interface.interface import Interface
 
 
 class IEmailHeaderModifier(Interface):
-    'An modifier for an email header'
+    'A modifier for an email header'
 
     def modify_header(email):  # lint:ok
-        '''Modify the header
+        '''Modify the header in the email message
 
 :param email: The email message
 :type email: :class:`email.message.Message`
 :returns: The new value for the header
-:rtype: unicode'''
+:rtype: ``unicode``, ``bytes``, or ``None``'''

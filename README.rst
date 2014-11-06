@@ -25,63 +25,13 @@ archived. Then this product sends an email to every group member
 that wishes to receive an email notification.
 
 The email notification is *mostly* made up of the original post,
-but the headers_ are highly modified. That modification is the
-job of this product.
+but the headers are highly modified. That modification is the job
+of this product.
 
-Once the messages are batched the recipients_ are determined,
+Once the messages are batched the recipients are determined,
 organised into batches, and then the email is sent out using
 ``SMTP`` [#gsemail]_
 
-Headers
-=======
-
-Some headers are added_, while others are modified_. An email
-message is processed by the
-``gs.group.list.sender.modify_headers`` function.
-
-Added
------
-
-The following headers are added to a message. They are normally
-associated with mailing-list functionality, and are rarely
-present in simple person-to-person email messages.
-
-``List-*``
-~~~~~~~~~~
-
-There are six headers specific to mailing lists, which are
-defined in `RFC 2369`_:
-
-* ``List-Help``: How to get help. It points to the Help pages for
-  the site.
-* ``List-Unsubscribe``: The most important of the ``list-``
-  headers, this header contains a ``mailto`` for the Unsubscribe
-  command, to get a person out of a group.
-* ``List-Subscribe``: A ``mailto`` for subscribing to the group.
-* ``List-Post``: A ``mailto`` for posting to the group. Used by
-  the *Reply* button in some email clients.
-* ``List-Owner``: The email address of the support-group for the site.
-* ``List-Archive``: The URL for the group.
-
-.. _RFC 2369: https://tools.ietf.org/html/RFC2369
-
-``Precedence``
-~~~~~~~~~~~~~~
-
-The ``Precedence`` header is set to ``Bulk``, indicating to email
-providers that there is a jolly good reason they are seeing
-multiple copies of the same message.
-
-``Sender``
-~~~~~~~~~~
-
-The ``Sender`` header is set to the email-address of the group.
-
-``X-Mailer``
-~~~~~~~~~~~~
-
-The ``X-Mailer`` header is a unofficial standard. It is set to
-``GroupServer <http://groupserver.org/> (gs.group.list.send)``.
 
 Modified
 --------

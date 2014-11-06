@@ -13,10 +13,12 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
+from email.header import Header
 from email.utils import formataddr
 from zope.cachedescriptors.property import Lazy
 from gs.core import to_unicode_or_bust
 from Products.GSGroup.interfaces import (IGSGroupInfo, IGSMailingListInfo)
+UTF8 = 'utf-8'
 
 
 class SimpleAddHeader(object):
@@ -37,55 +39,85 @@ class SimpleAddHeader(object):
 
 
 class Precedence(SimpleAddHeader):
-    '''The ``Precedence`` header. It is only ever set to ``bulk``.'''
+    ''':mailheader:`Precedence` header
+
+The :mailheader:`Precedence` header is only ever set to ``bulk``.
+This is not actually a header that is set by any standard.'''
+
     @staticmethod
     def modify_header(*args):
-        '''This is not actually a standard header.
+        '''Modify the :mailheader:`Precedence` header.
+
 :returns: ``bulk``
-:rtype: str'''
+:rtype: unicode'''
         retval = 'bulk'
         return retval
 
 
 class XMailer(SimpleAddHeader):
-    'The ``XMailer`` header'
+    '''Create a :mailheader:`X-Mailer` header
+
+The :mailheader:`X-Mailer` header is only ever set to a constant
+string. While undefined by any standard, it is expected to be in the email
+headers.'''
+
     @staticmethod
     def modify_header(*args):
-        '''This is not actually a standard header.
+        '''Modify the :mailheader:`X-Mailer` header.
+
 :returns: ``GroupServer <http://groupserver.org/> (gs.group.list.send)``
-:rtype: str'''
+:rtype: unicode'''
         retval = 'GroupServer <http://groupserver.org/> '\
                  '(gs.group.list.send)'
         return retval
 
 
 class Sender(SimpleAddHeader):
-    '''Defined in `RFC 5322`_, the sender is set to the email address of
-the group.
+    '''Create a :mailheader:`Sender` header
 
-.. _RFC 5322: https://tools.ietf.org/html/rfc5322#section-3.6.2'''
+Defined in :rfc:`5322#section-3.6.2`, the :mailheader:`Sender` is
+set to the email address of the group.'''
     def modify_header(self, *args):
+        '''Modify the :mailheader:`Sender` header.
+
+:returns: The *mailbox* of the group (a display-name and an angle-address).
+:rtype: str'''
         name = to_unicode_or_bust(self.groupInfo.name)
+        h = Header(name, UTF8)
+        headerName = h.encode()
         addr = self.listInfo.get_property('mailto')
-        retval = formataddr((name, addr))
+        retval = formataddr((headerName, addr))
         return retval
 
 
 class ListHelp(SimpleAddHeader):
-    '''A URL pointing to the Help pages, described in `RFC 2369`_.
+    '''Create a :mailheader:`List-Help` header
 
-.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.1'''
+The :mailheader:`List-Help` header is described in
+:rfc:`2369#section-3.1`.'''
     def modify_header(self, *args):
+        '''Modify the :mailheader:`List-Help` header.
+
+:returns: The URL of the Help page for the site.
+:rtype: unicode'''
         retval = '<{0}/help/>'.format(self.groupInfo.siteInfo.url)
         return retval
 
 
 class ListUnsubscribe(SimpleAddHeader):
-    '''A ``mailto:`` pointing to the Unsubscribe email address, described
-in `RFC 2369`_
+    '''Create a :mailheader:`List-Unsubscribe` header
 
-.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.2'''
+The :mailheader:`List-Unsubscribe` header contains a ``mailto:`` URL that
+points to the Unsubscribe email address, described in
+:rfc:`2369#section-3.2`. This is a **very** important header, because
+many email clients send an email to this address when people click the
+:guilabel:`Spam` button.'''
     def modify_header(self, *args):
+        '''Modify the :mailheader:`List-Unsubscribe` header.
+
+:returns: A ``mailto`` URL with the group-address and the
+          :mailheader:`Subject` set to ``Unsubscribe``.
+:rtype: unicode'''
         name = to_unicode_or_bust(self.groupInfo.name)
         desc = 'Leave {0}'.format(name)
 

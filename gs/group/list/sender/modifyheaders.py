@@ -24,8 +24,11 @@ from .interfaces import IEmailHeaderModifier
 class HeaderModifier(object):
     '''Modify the headers
 
-:param obj group: A group object.
-:param request: An HTTP request.'''
+:param group: A group object.
+:type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
+:param request: An HTTP request.
+:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+'''
     def __init__(self, group, request):
 
         self.context = self.group = group
@@ -36,7 +39,23 @@ class HeaderModifier(object):
 
 :param email: The email message to modify.
 :type email: :class:`email.message.Message`
-:returns: Nothing'''
+:returns: The modified email message.
+:rtype: :class:`email.message.Message`
+
+The :meth:`HeaderModifier.modify_headers` method acquires the
+header-adaptors (which conform to the
+:class:`.interfaces.IEmailHeaderModifier` interface). It then itterates
+through the adaptors (one per header) and then modifies the :obj:`email`
+based on the output of the header-adaptor:
+
+``None``:
+    The header is deleted.
+``str``:
+    The header is set to the string.
+``unicode``:
+    The output is encoded (using :class:`email.header.Header`) and the
+    header is set to the string.
+'''
         gsm = getGlobalSiteManager()
         for name, adaptor in gsm.getAdapters((self.group, self.request),
                                              IEmailHeaderModifier):
@@ -67,8 +86,10 @@ def modify_headers(email, group, request):
 
 :param email: The email message to modify.
 :type emaill: :class:`email.message.Message` or ``str``
-:param obj group: The group that is sending the email.
-:param obj request: The HTTP request that causes the email to be sent.
+:param group: The group that is sending the email.
+:type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
+:param request: The HTTP request that causes the email to be sent.
+:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
 :returns: The modified email message.
 :rtype: :class:`email.message.Message` or ``str``, depending on what was
         provided.'''
