@@ -7,7 +7,7 @@ Sending email messages from a GroupServer group
 
 :Author: `Michael JasonSmith`_
 :Contact: Michael JasonSmith <mpj17@onlinegroups.net>
-:Date: 2014-11-02
+:Date: 2014-11-05
 :Organization: `GroupServer.org`_
 :Copyright: This document is licensed under a
   `Creative Commons Attribution-Share Alike 4.0 International License`_
@@ -22,7 +22,7 @@ Introduction
 This product provides the *Message sender* for a GroupServer_
 group. When a post is added to a group it is accepted, and
 archived. Then this product sends an email to every group member
-that wishes to receive an email notification. 
+that wishes to receive an email notification.
 
 The email notification is *mostly* made up of the original post,
 but the headers_ are highly modified. That modification is the
@@ -35,7 +35,9 @@ organised into batches, and then the email is sent out using
 Headers
 =======
 
-Some headers are added_, while others are modified_.
+Some headers are added_, while others are modified_. An email
+message is processed by the
+``gs.group.list.sender.modify_headers`` function.
 
 Added
 -----
@@ -91,21 +93,21 @@ they are modified from what is normally present.
 ~~~~~~~~
 
 The ``From`` address is the most complex modification. If the
-**host of the author** of the email message has a DMARC setting
-then the ``From`` address will be rewritten to the form
-``user-{userId}@{canonical-host}`` [#gsdmarc]_.
+**email provider of the author** has a DMARC setting [#gsdmarc]_
+then the ``From`` address will be rewritten to either
 
-``DKIM-Signature``
-~~~~~~~~~~~~~~~~~~
-
-Related to the ``From`` address rewriting because of DMARC, the
-``DKIM-Signature`` header is dropped, if present.
+* ``member-{userId}@{canonical-host}`` if the author has a profile,
+  or
+* ``anon-{mbox}-at-{host}@{domain}`` if there is no profile for
+  the member.
 
 ``Subject``
 ~~~~~~~~~~~
 
-The ``Subject`` header has the short group-name , in
-square-brackets, added to the subject if the name is missing.
+The ``Subject`` header has the short group-name (also the title
+of the mailing-list object) — in square-brackets and after the
+``Re: ``, if present — added to the subject if the name is
+missing.
 
 ``Reply-to``
 ~~~~~~~~~~~~
@@ -131,7 +133,9 @@ Both:
 Recipients
 ==========
 
-The recipients of post is calculated as follows.
+The ``gs.group.list.sender.emailaddresses.EmailPerPostAddresses``
+class generates the list of recipient addresses. The recipients
+of post is calculated as follows.
 
 * For each member of the group that is receiving one email per
   post
@@ -144,7 +148,8 @@ The recipients of post is calculated as follows.
   + Add those addresses to the list of recipient addresses.
 
 Then reverse-sort the list, which groups people by email-address
-provider. Finally, send out email messages in batches of 50.
+provider. Finally, send out email messages in batches of 50 by
+``gs.email`` [#gsemail]_.
 
 Resources
 =========

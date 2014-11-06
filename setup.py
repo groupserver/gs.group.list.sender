@@ -27,10 +27,14 @@ with codecs.open(os.path.join("docs", "HISTORY.rst"),
 
 install_requires = [
     'setuptools',
+    'SQLAlchemy',
     'zope.cachedescriptors',
     'zope.component',
     'zope.interface',
-    'gs.email', ]
+    'gs.database',
+    'gs.email',
+    'Products.GSGroup',
+]
 
 setup(name='gs.group.list.sender',
       version=version,
