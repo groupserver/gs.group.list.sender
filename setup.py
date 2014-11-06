@@ -31,8 +31,12 @@ install_requires = [
     'zope.cachedescriptors',
     'zope.component',
     'zope.interface',
+    'gs.cache',
+    'gs.core',
     'gs.database',
+    'gs.dmarc',
     'gs.email',
+    'gs.group.member.base',
     'Products.GSGroup',
 ]
 

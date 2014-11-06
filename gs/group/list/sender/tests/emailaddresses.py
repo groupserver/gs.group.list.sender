@@ -22,9 +22,10 @@ class TestEmailPerPostAddresses(TestCase):
     addrs = ['person@people.example.com', 'member@members.example.com',
              'individual@people.example.com', 'admin@members.example.com', ]
 
+    @patch('gs.group.list.sender.emailaddresses.get_group_userids')
     @patch('gs.group.list.sender.emailaddresses.createObject')
     @patch('gs.group.list.sender.emailaddresses.AddressQuery')
-    def test_addresses(self, AddressQuery, createObject):
+    def test_addresses(self, AddressQuery, createObject, guid):
         q = AddressQuery.return_value
         q.email_per_post_addresses.return_value = self.addrs
 
@@ -34,9 +35,10 @@ class TestEmailPerPostAddresses(TestCase):
         expected = sorted(self.addrs, key=lambda s: s[::-1])
         self.assertEqual(r, expected)
 
+    @patch('gs.group.list.sender.emailaddresses.get_group_userids')
     @patch('gs.group.list.sender.emailaddresses.createObject')
     @patch('gs.group.list.sender.emailaddresses.AddressQuery')
-    def test_addresses_dupe(self, AddressQuery, createObject):
+    def test_addresses_dupe(self, AddressQuery, createObject, guid):
         'Test that duplicate addresses are dropped'
         q = AddressQuery.return_value
         addrs = self.addrs + [self.addrs[0]]
@@ -49,9 +51,10 @@ class TestEmailPerPostAddresses(TestCase):
         self.assertEqual(r, expected)
         self.assertNotEqual(len(r), len(addrs))
 
+    @patch('gs.group.list.sender.emailaddresses.get_group_userids')
     @patch('gs.group.list.sender.emailaddresses.createObject')
     @patch('gs.group.list.sender.emailaddresses.AddressQuery')
-    def test_addresses_not_an_email(self, AddressQuery, createObject):
+    def test_addresses_not_an_email(self, AddressQuery, createObject, guid):
         'Test that non-addresses are dropped'
         q = AddressQuery.return_value
         addrs = self.addrs + ['Parrot']

@@ -34,7 +34,7 @@ class Sender(object):
     @property
     def addresses(self):
         eppa = EmailPerPostAddresses(self.group)
-        retval = eppa.addresses()
+        retval = eppa.addresses
         return retval
 
     def send(self, email):

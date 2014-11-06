@@ -15,6 +15,7 @@
 from __future__ import absolute_import, unicode_literals
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
+from gs.group.member.base import get_group_userids
 from .queries import AddressQuery
 
 
@@ -35,10 +36,7 @@ class EmailPerPostAddresses(object):
 
     @Lazy
     def memberIds(self):
-        site_root = self.context.site_root()
-        acl_users = site_root.acl_users
-        userGroup = acl_users.getGroupById(self.groupInfo.id)
-        retval = userGroup.getUsers()
+        retval = get_group_userids(self.context, self.groupInfo)
         return retval
 
     @Lazy

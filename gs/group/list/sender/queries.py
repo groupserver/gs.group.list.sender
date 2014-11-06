@@ -33,7 +33,7 @@ class AddressQuery(object):
         '''All the members with a setting that might include/exclude
         specific email addresses or block email delivery'''
         est = self.emailSettingTable
-        s = est.select([est.c.user_id])
+        s = sa.select([est.c.user_id])
         # FIXME: See get_digest_addresses for why
         # email_settings.append_whereclause(est.c.site_id == site_id)
         s.append_whereclause(est.c.group_id == groupId)
@@ -83,7 +83,7 @@ class AddressQuery(object):
         ignoreIds = self.members_on_digest_or_web(site_id, groupId)
 
         specificUserAddresses = \
-            self.group_specific_email_addresses(site_id, groupId)
+            self.group_specific_addresses(site_id, groupId)
         # Add the group-specific email address to the return value, and
         # ignore the remainder of the users.
         specificUsers = []
