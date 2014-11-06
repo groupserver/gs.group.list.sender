@@ -38,10 +38,14 @@ to the email address of the person who wrote the message (contrast to the
 :mailheader:`Sender`, :class:`.simpleadd.Sender`). However, if a member uses
 an email-address from a host that has a DMARC policy of either
 ``quarantine`` or ``reject`` then the email from the group will be dropped
-by the recipients as spam.
+by the recipients as spam [#gsdmarc]_.
 
 To get around this the :mailheader:`From` header is rewritten if the
 host has DMARC turned on.
+
+.. [#gsdmarc] The ``gs.dmarc`` product determines the DMARC
+              setting of the host.
+              <https://github.com/groupserver/gs.dmarc>
 '''
     actualPolicies = (ReceiverPolicy.quarantine, ReceiverPolicy.reject)
 

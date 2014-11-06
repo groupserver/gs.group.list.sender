@@ -44,9 +44,6 @@ Resources
 .. [#gsemail] The ``gs.email`` product does the actual sending to
               the SMTP server
               <https://github.com/groupserver/gs.email>
-.. [#gsdmarc] The ``gs.dmarc`` product determines the DMARC
-              setting of the host.
-              <https://github.com/groupserver/gs.dmarc>
 
 .. _GroupServer: http://groupserver.org/
 .. _GroupServer.org: http://groupserver.org/
