@@ -46,7 +46,7 @@ This is not actually a header that is set by any standard.'''
 
     @staticmethod
     def modify_header(*args):
-        '''Modify the :mailheader:`Precedence` header.
+        '''Generate the content for the :mailheader:`Precedence` header.
 
 :returns: ``bulk``
 :rtype: unicode'''
@@ -59,11 +59,12 @@ class XMailer(SimpleAddHeader):
 
 The :mailheader:`X-Mailer` header is only ever set to a constant
 string. While undefined by any standard, it is expected to be in the email
-headers.'''
+headers. (It is the email equivilent to the ``User-Agent`` header in
+HTTP.)'''
 
     @staticmethod
     def modify_header(*args):
-        '''Modify the :mailheader:`X-Mailer` header.
+        '''Generate the content for the :mailheader:`X-Mailer` header.
 
 :returns: ``GroupServer <http://groupserver.org/> (gs.group.list.send)``
 :rtype: unicode'''
@@ -78,7 +79,7 @@ class Sender(SimpleAddHeader):
 Defined in :rfc:`5322#section-3.6.2`, the :mailheader:`Sender` is
 set to the email address of the group.'''
     def modify_header(self, *args):
-        '''Modify the :mailheader:`Sender` header.
+        '''Generate the content for the :mailheader:`Sender` header.
 
 :returns: The *mailbox* of the group (a display-name and an angle-address).
 :rtype: str'''
@@ -96,7 +97,7 @@ class ListHelp(SimpleAddHeader):
 The :mailheader:`List-Help` header is described in
 :rfc:`2369#section-3.1`.'''
     def modify_header(self, *args):
-        '''Modify the :mailheader:`List-Help` header.
+        '''Generate the content for the :mailheader:`List-Help` header.
 
 :returns: The URL of the Help page for the site.
 :rtype: unicode'''
@@ -108,12 +109,16 @@ class ListUnsubscribe(SimpleAddHeader):
     '''Create a :mailheader:`List-Unsubscribe` header
 
 The :mailheader:`List-Unsubscribe` header contains a ``mailto:`` URL that
-points to the Unsubscribe email address, described in
-:rfc:`2369#section-3.2`. This is a **very** important header, because
+points to the email address that allows a member to leave a group, described
+in :rfc:`2369#section-3.2`. This is a **very** important header, because
 many email clients send an email to this address when people click the
-:guilabel:`Spam` button.'''
+:guilabel:`Spam` button.
+
+:See also: `The Leave product
+            <https://github.com/groupserver/gs.group.member.leave>`_'''
     def modify_header(self, *args):
-        '''Modify the :mailheader:`List-Unsubscribe` header.
+        '''Generate the content for the :mailheader:`List-Unsubscribe`
+header.
 
 :returns: A ``mailto`` URL with the group-address and the
           :mailheader:`Subject` set to ``Unsubscribe``.
@@ -129,11 +134,19 @@ many email clients send an email to this address when people click the
 
 
 class ListSubscribe(SimpleAddHeader):
-    '''A ``mailto:`` pointing to the Subscrbe email address, described
-in `RFC 2369`_
+    '''Create a :mailheader:`List-Subscribe` header
 
-.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.3'''
+The :mailheader:`List-Unsubscribe` header contains a ``mailto:`` URL that
+allows someone to join a group, as described in :rfc:`2369#section-3.3`.
+
+:See also: `The Subscribe product
+            <https://github.com/groupserver/gs.group.member.subscribe>`_'''
     def modify_header(self, *args):
+        '''Generate the content for the :mailheader:`List-Subscribe` header.
+
+:returns: A ``mailto`` URL with the group-address and the
+          :mailheader:`Subject` set to ``Subscribe``.
+:rtype: unicode'''
         name = to_unicode_or_bust(self.groupInfo.name)
         desc = 'Join {0}'.format(name)
 
@@ -145,32 +158,51 @@ in `RFC 2369`_
 
 
 class ListPost(SimpleAddHeader):
-    '''A ``mailto:`` pointing to the email address for the group, described
-in `RFC 2369`_
+    '''Create a :mailheader:`List-Post` header
 
-.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.4'''
+The :mailheader:`List-Post` header contains a ``mailto:`` URL that
+allows someone to post to a group, as described in :rfc:`2369#section-3.4`.
+The interaction between this header and :mailheader:`Reply-To`
+(see :class:`.replyto.ReplyToHeader`) is defined by the email client.
+Some mail clients provide a :guilabel:`Reply to list` option, in addion to
+:guilabel:`Reply` and :guilabel:`Reply to all`.'''
     def modify_header(self, *args):
+        '''Generate the content for the :mailheader:`List-Post` header.
+
+:returns: A ``mailto`` URL containing the group-address.
+:rtype: unicode'''
         emailAddr = self.listInfo.get_property('mailto')
         retval = '<mailto:{0}>'.format(emailAddr)
         return retval
 
 
 class ListOwner(SimpleAddHeader):
-    '''A ``mailto:`` pointing to the email address for the support group,
-described in `RFC 2369`_
+    '''Create a :mailheader:`List-Owner` header
 
-.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.5'''
+The :mailheader:`List-Owner` header contains a ``mailto:`` pointing to the
+email address for the support group, as described in
+:rfc:`2369#section-3.5`.'''
     def modify_header(self, *args):
+        '''Generate the content for the :mailheader:`List-Owner` header.
+
+:returns: A ``mailto`` URL containing the email address of the support
+          group for the site.
+:rtype: unicode'''
         emailAddr = self.groupInfo.siteInfo.get_support_email()
         retval = '<mailto:{0}>'.format(emailAddr)
         return retval
 
 
 class ListArchive(SimpleAddHeader):
-    '''The URL for the group, described in `RFC 2369`_
+    '''Create a :mailheader:`List-Owner` header
 
-.. _RFC 2369: https://tools.ietf.org/html/rfc2369#section-3.6'''
+The :mailheader:`List-Owner` header contains a URL for the group, as
+described in :rfc:`2369#section-3.6`.'''
     def modify_header(self, *args):
+        '''Generate the content for the :mailheader:`List-Archive` header.
+
+:returns: A URL containing the address of the group on the Web.
+:rtype: unicode'''
         addr = self.groupInfo.url
         retval = '<{0}>'.format(addr)
         return retval

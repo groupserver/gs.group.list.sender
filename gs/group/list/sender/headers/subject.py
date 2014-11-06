@@ -20,12 +20,30 @@ from .simpleadd import SimpleAddHeader
 
 
 class SubjectHeader(SimpleAddHeader):
+    '''The :mailheader:`Subject` header, with the group name
+
+:param group: A group object.
+:type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
+:param request: An HTTP request.
+:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+
+It is convinient to add the group-name to the :mailheader:`Subject` header
+so recipients of the email message can easily identify posts from the
+group. This adaptor adds the *short name* (the ``title`` of the list
+object) to the :mailheader:`Subject` header if it is not already there.'''
     paraRegexep = re_compile('[\u2028\u2029]+')
     annoyingChars = whitespace + '\uFFF9\uFFFA\uFFFB\uFFFC\uFEFF'
     annoyingCharsL = annoyingChars + '\u202A\u202D'
     annoyingCharsR = annoyingChars + '\u202B\u202E'
 
     def modify_header(self, email):
+        '''Generate the content for the :mailheader:`Subject` header
+
+:param email: The email message to modify.
+:type email: :class:`email.message.Message`
+:returns: The new value for the :mailheader:`Subject` header, which
+          will contain the title of the mailing-list object in
+          square-brackets.'''
         subject = email['Subject']
         listTitle = to_unicode_or_bust(self.groupInfo.get_property(
             'short_name', self.listInfo.mlist.title_or_id()))
@@ -42,8 +60,13 @@ class SubjectHeader(SimpleAddHeader):
         return retval
 
     def strip_subject(self, subj, listTitle):
-        '''Remove the list title from the subject, if it isn't just an empty
-string'''
+        '''Remove the list title from the subject
+
+:param unicode subj: The subject to modify
+:param unicode listTitle: The title of the mailing-list object
+:returns: The subject stripped of the name, or ``No subject`` if
+          ``subj`` is ``None``.
+:rtype: unicode'''
         if listTitle:
             elt = escape(listTitle)
             subject = sub('\[%s\]' % elt, '', subj).strip()

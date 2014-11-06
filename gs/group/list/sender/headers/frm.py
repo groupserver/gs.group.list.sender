@@ -26,7 +26,23 @@ UTF8 = 'utf-8'
 
 
 class FromHeader(SimpleAddHeader):
-    'The From header, with DMARC avoidance.'
+    '''The :mailheader:`From` header, with DMARC avoidance
+
+:param group: A group object.
+:type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
+:param request: An HTTP request.
+:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+
+DMARC causes issues for groups. Lists usually set the :mailheader:`From`
+to the email address of the person who wrote the message (contrast to the
+:mailheader:`Sender`, :class:`.simpleadd.Sender`). However, if a member uses
+an email-address from a host that has a DMARC policy of either
+``quarantine`` or ``reject`` then the email from the group will be dropped
+by the recipients as spam.
+
+To get around this the :mailheader:`From` header is rewritten if the
+host has DMARC turned on.
+'''
     actualPolicies = (ReceiverPolicy.quarantine, ReceiverPolicy.reject)
 
     @staticmethod
@@ -41,21 +57,44 @@ class FromHeader(SimpleAddHeader):
         retval = acl_users.get_userByEmail(email)
         return retval
 
-    def get_user_address(self, user, domain):
+    @staticmethod
+    def get_user_address(user, domain):
+        '''Get a fake address for a member of a group.
+
+:param user: The user.
+:type user: :class:`Products.CustomUserFolder.CustomUser`
+:param unicode domain: The host of the group.
+:returns: An email address of the form ``member-{userId}@{domain}``.
+:rtype: unicode'''
         r = 'member-{userId}@{domain}'
         retval = r.format(userId=user.getId(), domain=domain)
         return retval
 
     @staticmethod
     def get_anon_address(mbox, host, domain):
-            r = 'anon-{mbox}-at-{host}@{domain}'
-            h = host.replace('.', '-')
-            retval = r.format(mbox=mbox, host=h, domain=domain)
-            return retval
+        '''Get a fake address for a person without a profile
+
+:param unicode mbox: The mbox from the email address of the person.
+:param unicode host: The host from the email address of the person.
+:param unicode domain: The host of the group.
+:returns: An email address of the form ``'anon-{mbox}-at-{host}@{domain}'``.
+:rtype: unicode'''
+        r = 'anon-{mbox}-at-{host}@{domain}'
+        h = host.replace('.', '-')
+        retval = r.format(mbox=mbox, host=h, domain=domain)
+        return retval
 
     @staticmethod
     def set_formally_from(email):
-        "Set the old From header to 'X-gs-formerly-from'"
+        '''Create an :mailheader:`X-GS-Formerly-From`
+
+:param email: The email message to modify.
+:type email: :class:`email.message.Message`
+
+For debugging the :mailheader:`From` address is copied to a new
+:mailheader:`X-GS-Formerly-From` header. This is **a side effect** of
+modifying the :mailheader:`From` header.
+'''
         originalFromAddr = parseaddr(email['From'])
         oldName = to_unicode_or_bust(originalFromAddr[0])
         oldHeaderName = Header(oldName, UTF8)
@@ -74,7 +113,22 @@ class FromHeader(SimpleAddHeader):
         return retval
 
     def modify_header(self, email):
-        'Generate a new From header if the mail provider has DMARC on'
+        '''Generate the content for the :mailheader:`From` header if
+the mail provider has DMARC on.
+
+:param email: The email message to modify.
+:type email: :class:`email.message.Message`
+:returns: Either:
+
+    * A new :mailheader:`From` address if the mail provider has a DMARC
+      policy of ``quarantine`` or ``reject``. The address with be of the
+      form returned by :meth:`FromHeader.get_user_address` if the person
+      has a profile, or that returned by
+      :meth:`FromHeader.get_anon_address` otherwise.
+
+    * The existing :mailheader:`From` address in all other situations.
+
+:rtype: bytes'''
         originalFromAddr = parseaddr(email['From'])
         origHost = originalFromAddr[1].split('@')[1]
         dmarcPolicy = self.get_dmarc_policy_for_host(origHost)

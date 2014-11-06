@@ -35,8 +35,16 @@ class ReplyTo(Enum):
 
 
 class ReplyToHeader(SimpleAddHeader):
-    'The Reply-To header, which determines who gets the replies'
+    '''The :mailheader:`Reply-To` header
 
+:param group: A group object.
+:type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
+:param request: An HTTP request.
+:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+
+Group administrators sometimes want replies to email messages from a group
+to go to odd places. This class sets the :mailheader:`Reply-To` header to
+best reflect these odd views.'''
     @Lazy
     def replyTo(self):
         r = self.listInfo.get_property('replyto', 'group')
@@ -49,6 +57,25 @@ class ReplyToHeader(SimpleAddHeader):
         return retval
 
     def modify_header(self, email):
+        '''Generate the content for the :mailheader:`Reply-To` header
+
+:param email: The email message to modify.
+:type email: :class:`email.message.Message`
+:returns: Either:
+
+    * The email address from the :mailheader:`From` header if the
+      ``replyto`` property of the list-object is set to ``sender``. This is
+      the default for announcement groups, as few group members can post to
+      the group.
+    * Both the email-address in the :mailheader:`From` header and the
+      email-address of the group if the ``replyto`` property of the
+      list-object is set to ``both``. (Yes, the :mailheader:`Reply-To`
+      header can contain an *address-list* according to
+      :rfc:`5322#section-3.6.2`.)
+    * The email address for the group in all other cases. This is the
+      default for most groups.
+
+:rtype: bytes'''
         authorReplyTo = parseaddr(email.get('Reply-To',
                                   email.get('From')))[1]
         groupReplyTo = parseaddr(self.listInfo.get_property('mailto'))[1]

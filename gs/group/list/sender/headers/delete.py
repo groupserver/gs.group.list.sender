@@ -16,9 +16,10 @@ from __future__ import absolute_import, unicode_literals
 
 
 class DeleteHeader(object):
-    '''A header that should be deleted delete'''
+    '''A header that should be deleted.'''
     def __init__(*args):
         pass
 
     def modify_header(*args):
+        ':returns: None'
         return None

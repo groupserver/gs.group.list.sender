@@ -9,7 +9,6 @@ Contents:
    sender
    headers
    standard
-   recipients
    HISTORY
 
 This product provides the *Message sender* for a GroupServer_

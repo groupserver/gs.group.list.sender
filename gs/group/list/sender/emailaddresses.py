@@ -20,7 +20,10 @@ from .queries import AddressQuery
 
 
 class EmailPerPostAddresses(object):
+    '''The email addresses for the group-members who get one email per post
 
+:param group: A group object.
+:type group: :class:`gs.group.base.interfaces.IGSGroupMarker`'''
     def __init__(self, group):
         self.context = self.group = group
 
@@ -46,6 +49,19 @@ class EmailPerPostAddresses(object):
 
     @Lazy
     def addresses(self):
+        '''The list of addresses
+
+:returns: The list of email addresses
+:rtype: A list of strings
+
+The addresses are for each of the group members that have
+* Verified email addresses,
+* Are on *one email per post*, and
+* Have not been blacklisted.
+
+Each address is guarinteed to appear only once, and they are sorted by
+the **reverse string**, so all the addresses from the same domain are next
+to each other.'''
         addrs = self.query.email_per_post_addresses(self.groupInfo.id,
                                                     self.siteInfo.id,
                                                     self.memberIds)

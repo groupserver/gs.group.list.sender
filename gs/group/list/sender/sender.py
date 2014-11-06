@@ -20,7 +20,13 @@ from .modifyheaders import modify_headers
 
 
 class Sender(object):
+    '''Send an email message from a group
 
+:param group: A group object.
+:type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
+:param request: An HTTP request.
+:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+'''
     def __init__(self, group, request):
         self.context = self.group = group
         self.request = request
@@ -38,7 +44,16 @@ class Sender(object):
         return retval
 
     def send(self, email):
-        'Send the email to the group'
+        '''Send the email to the group
+
+:param email: The email message to send
+:type email: :class:`email.message.Message`
+
+The message will be sent with the email-address for the group set as the
+``return path``, and with the headers modified by
+:func:`gs.group.list.sender.modify_headers`. The recipients are defined by
+:class:`.emailaddresses.EmailPerPostAddresses`.
+'''
         e = modify_headers(email, self.group, self.request)
         mailString = e.as_string()
         send_email(self.returnpath, self.addresses, mailString)
