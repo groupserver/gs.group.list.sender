@@ -47,8 +47,11 @@ class HeaderModifier(object):
                 #   in the headers.
                 del(email[name])
             else:
-                hv = Header(nv, 'utf-8')
-                newValue = hv.encode()
+                if type(nv) == bytes:  # == str in Python 2
+                    newValue = nv
+                else:  # Unicode
+                    hv = Header(nv, 'utf-8')
+                    newValue = hv.encode()
                 if name in email:
                     email.replace_header(name, newValue)
                 else:
