@@ -41,12 +41,18 @@ class HeaderModifier(object):
         for name, adaptor in gsm.getAdapters((self.group, self.request),
                                              IEmailHeaderModifier):
             nv = adaptor.modify_header(email)
-            hv = Header(nv, 'utf-8')
-            newValue = hv.encode()
-            if name in email:
-                email.replace_header(name, newValue)
+            if nv is None:
+                # From the email.message docs:
+                #   No exception is raised if the named field isn't present
+                #   in the headers.
+                del(email[name])
             else:
-                email.add_header(name, newValue)
+                hv = Header(nv, 'utf-8')
+                newValue = hv.encode()
+                if name in email:
+                    email.replace_header(name, newValue)
+                else:
+                    email.add_header(name, newValue)
 
 
 STRING = basestring if (sys.version_info < (3, )) else str

@@ -24,7 +24,8 @@ from gs.group.list.sender.modifyheaders import (modify_headers,
                                                 HeaderModifier)
 from gs.group.list.sender.interfaces import IEmailHeaderModifier
 from .faux import (FauxGroup, IFauxGroup, get_email, FauxRequest,
-                   FauxXMailer, UFauxXMailer, UTF8FauxXMailer)
+                   FauxXMailer, UFauxXMailer, UTF8FauxXMailer,
+                   DeleterMailer)
 
 
 class TestModifyHeadersFunction(TestCase):
@@ -137,3 +138,22 @@ class TestHeaderModifier(TestCase):
 
         expected = UTF8FauxXMailer.modify_header(None).decode('utf-8')
         self.assertXMailer(e, expected)
+
+    def test_delete(self):
+        'Test we can delete headers if None is returned as a value'
+        hm = HeaderModifier(FauxGroup(), FauxRequest())
+        e = get_email("Ce n'est pas un email'")
+
+        with header_adapter('Subject', DeleterMailer):
+            hm.modify_headers(e)
+        self.assertNotIn('Subject', e)
+
+    def test_delete_not_present(self):
+        'Test that we can try and delete a non-existant header'
+        hm = HeaderModifier(FauxGroup(), FauxRequest())
+        e = get_email("Ce n'est pas un email'")
+
+        self.assertNotIn('Ce-n-est-pa-un-header', e)
+        with header_adapter('Ce-n-est-pa-un-header', DeleterMailer):
+            hm.modify_headers(e)
+        self.assertNotIn('Ce-n-est-pa-un-header', e)

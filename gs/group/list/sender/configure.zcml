@@ -67,6 +67,7 @@
     provides=".interfaces.IEmailHeaderModifier"
     factory=".headers.simpleadd.ListArchive" />
 
+  <!-- The three complex headers -->
   <adapter
     name="Subject"
     for="gs.group.base.interfaces.IGSGroupMarker
@@ -87,4 +88,19 @@
          zope.publisher.interfaces.browser.IDefaultBrowserLayer"
     provides=".interfaces.IEmailHeaderModifier"
     factory=".headers.frm.FromHeader" />
+
+  <!-- The headers to delete -->
+  <adapter
+    name="Disposition-Notification-To"
+    for="gs.group.base.interfaces.IGSGroupMarker
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+    provides=".interfaces.IEmailHeaderModifier"
+    factory=".headers.delete.DeleteHeader" />
+
+  <adapter
+    name="Return-Receipt-To"
+    for="gs.group.base.interfaces.IGSGroupMarker
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+    provides=".interfaces.IEmailHeaderModifier"
+    factory=".headers.delete.DeleteHeader" />
 </configure>

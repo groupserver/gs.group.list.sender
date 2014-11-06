@@ -97,6 +97,13 @@ class UTF8FauxXMailer(FauxXMailer):
         return '\u1F604'.encode('utf-8')
 
 
+@implementer(IEmailHeaderModifier)
+class DeleterMailer(FauxXMailer):
+    @staticmethod
+    def modify_header(*args):
+        return None
+
+
 @implementer(IDefaultBrowserLayer)
 class FauxRequest(object):
     'This is not a request'
