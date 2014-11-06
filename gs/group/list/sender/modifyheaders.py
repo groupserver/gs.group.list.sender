@@ -53,6 +53,7 @@ class HeaderModifier(object):
                     email.replace_header(name, newValue)
                 else:
                     email.add_header(name, newValue)
+        return email
 
 
 STRING = basestring if (sys.version_info < (3, )) else str
@@ -80,7 +81,7 @@ def modify_headers(email, group, request):
         raise TypeError(m)
 
     hm = HeaderModifier(group, request)
-    hm.modify_headers(e)
+    modifiedEmail = hm.modify_headers(e)
 
-    retval = e.as_string() if fromString else e
+    retval = modifiedEmail.as_string() if fromString else modifiedEmail
     return retval
