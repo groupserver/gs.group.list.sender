@@ -41,16 +41,16 @@ class SimpleAddHeader(object):
 class Precedence(SimpleAddHeader):
     ''':mailheader:`Precedence` header
 
-The :mailheader:`Precedence` header is only ever set to ``bulk``.
+The :mailheader:`Precedence` header is only ever set to ``list``.
 This is not actually a header that is set by any standard.'''
 
     @staticmethod
     def modify_header(*args):
         '''Generate the content for the :mailheader:`Precedence` header.
 
-:returns: ``bulk``
+:returns: ``list``
 :rtype: unicode'''
-        retval = 'bulk'
+        retval = 'list'
         return retval
 
 

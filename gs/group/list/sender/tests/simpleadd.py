@@ -29,13 +29,13 @@ class TestStaticHeaders(TestCase):
         'Ensure the precedence header is static'
         p = Precedence(FauxGroup, FauxRequest)
         r = p.modify_header()
-        self.assertEqual('bulk', r)
+        self.assertEqual('list', r)
 
     def test_precedence_previous_data(self):
         'Ensure the precedence header ignores its argument'
         p = Precedence(FauxGroup, FauxRequest)
         r = p.modify_header('wibble')
-        self.assertEqual('bulk', r)
+        self.assertEqual('list', r)
 
     def test_xmailer(self):
         'Test the X-Mailer header'
