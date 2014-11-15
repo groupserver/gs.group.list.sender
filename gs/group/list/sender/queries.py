@@ -37,14 +37,14 @@ class AddressQuery(object):
         # FIXME: See get_digest_addresses for why
         # email_settings.append_whereclause(est.c.site_id == site_id)
         s.append_whereclause(est.c.group_id == groupId)
-
+        s.append_whereclause(sa.or_((est.c.site_id == siteId),
+                                    (est.c.site_id == '')))
         session = getSession()
         r = session.execute(s)
 
         retval = []
-        if r.rowcount:
-            for row in r:
-                retval.append(row['user_id'])
+        for row in r:
+            retval.append(row['user_id'])
         return retval
 
     def group_specific_addresses(self, siteId, groupId):
@@ -52,7 +52,8 @@ class AddressQuery(object):
         uet = self.userEmailTable
         cols = [guet.c.user_id, guet.c.email]
         s = sa.select(cols)
-        s.append_whereclause(guet.c.site_id == siteId)
+        s.append_whereclause(sa.or_((guet.c.site_id == siteId),
+                                    (guet.c.site_id == '')))
         s.append_whereclause(guet.c.group_id == groupId)
         s.append_whereclause(guet.c.email == uet.c.email)
         s.append_whereclause(uet.c.verified_date != None)
@@ -76,18 +77,19 @@ class AddressQuery(object):
     def email_per_post_addresses(self, siteId, groupId, memberIds):
         # TODO: We currently can't use site_id
         # preferred_only=True, process_settings=True, verified_only=True
-        site_id = ''
         uet = self.userEmailTable
         retval = []
 
-        ignoreIds = self.members_on_digest_or_web(site_id, groupId)
+        ignoreIds = self.members_on_digest_or_web(siteId, groupId)
 
         specificUserAddresses = \
-            self.group_specific_addresses(site_id, groupId)
+            self.group_specific_addresses(siteId, groupId)
         # Add the group-specific email address to the return value, and
         # ignore the remainder of the users.
         specificUsers = []
-        for userId, address in specificUserAddresses:
+        for sua in specificUserAddresses:
+            userId = sua['user_id']
+            address = sua['email']
             # Double check for security that this user should actually
             # be receiving email for this group.
             if ((userId in memberIds) and (userId not in ignoreIds)):

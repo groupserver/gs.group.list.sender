@@ -62,8 +62,8 @@ The addresses are for each of the group members that have
 Each address is guarinteed to appear only once, and they are sorted by
 the **reverse string**, so all the addresses from the same domain are next
 to each other.'''
-        addrs = self.query.email_per_post_addresses(self.groupInfo.id,
-                                                    self.siteInfo.id,
+        addrs = self.query.email_per_post_addresses(self.siteInfo.id,
+                                                    self.groupInfo.id,
                                                     self.memberIds)
         # Ensure the addresses are unique, and vaugely valid
         cleanAddresses = set([a for a in addrs if (a and ('@' in a))])
