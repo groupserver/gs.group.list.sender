@@ -153,7 +153,7 @@ the mail provider has DMARC on.
                 mbox, host = parseaddr(originalFromAddr)[1].split('@')
                 newAddress = self.get_anon_address(mbox, host, domain)
                 log.info('Using anon-address <{0}>'.format(newAddress))
-            assert(newAddress, 'The new email address is not set.')
+            assert newAddress, 'The new email address is not set.'
 
             fn = self.get_best_name(originalFromAddr[0], user)
             headerName = Header(fn, UTF8)
