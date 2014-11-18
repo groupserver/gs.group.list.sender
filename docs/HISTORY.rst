@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 * Fixed the queries so they work
+* Cope with a missing ``From`` address
 
 1.0.0 (2014-11-07)
 ------------------
