@@ -134,7 +134,15 @@ the mail provider has DMARC on.
 
 :rtype: bytes'''
         originalFromAddr = parseaddr(email['From'])
-        origHost = originalFromAddr[1].split('@')[1]
+        try:
+            origHost = originalFromAddr[1].split('@')[1]
+        except IndexError as ie:
+            m = 'Could not parse the From address\n{addr}\n{err}'
+            msg = m.format(addr=originalFromAddr, err=ie)
+            log.warning(msg)
+            retval = email['From']
+            return retval
+
         dmarcPolicy = self.get_dmarc_policy_for_host(origHost)
 
         if (dmarcPolicy in self.actualPolicies):

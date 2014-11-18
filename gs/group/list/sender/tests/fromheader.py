@@ -77,6 +77,18 @@ class TestFromHeader(TestCase):
         r = fh.get_best_name('A. Member', MagicMock())
         self.assertEqual('A. B. Member', r)
 
+    @patch('gs.group.list.sender.headers.frm.log')
+    def test_from_missing(self, frmLog):
+        'Cope with a missing From'
+        e = get_email('Toad the wet sprocket')
+        del(e['From'])
+        fh = FromHeader(FauxGroup, FauxRequest)
+
+        r = fh.modify_header(e)
+
+        self.assertEqual(None, r)
+        self.assertEqual(1, frmLog.warning.call_count)
+
     @patch.object(FromHeader, 'get_dmarc_policy_for_host')
     def test_dmarc_no_dmarc(self, gdpfh):
         'Test that everything is unmodified if there is no DMARC on'
