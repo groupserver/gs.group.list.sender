@@ -3,5 +3,4 @@ recursive-include docs *
 include version.py
 include *.txt
 include *.rst
-prune-dir gs/group/list/command/tests/__pycache__/
 global-exclude *.pyc
