@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -25,7 +25,8 @@ class SubjectHeader(SimpleAddHeader):
 :param group: A group object.
 :type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
 :param request: An HTTP request.
-:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+:type request:
+  :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
 
 It is convinient to add the group-name to the :mailheader:`Subject` header
 so recipients of the email message can easily identify posts from the
@@ -70,6 +71,8 @@ object) to the :mailheader:`Subject` header if it is not already there.'''
         if listTitle:
             elt = escape(listTitle)
             subject = sub('\[%s\]' % elt, '', subj).strip()
+        else:
+            subject = subj
 
         subject = self.paraRegexep.sub(' ', subject)
         # compress up the whitespace into a single space
