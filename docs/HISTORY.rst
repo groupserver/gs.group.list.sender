@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.0.2 (2015-02-02)
+------------------
+
+* Processing the message even if the list is missing a title
+
+
 1.0.2 (2015-01-26)
 ------------------
 
