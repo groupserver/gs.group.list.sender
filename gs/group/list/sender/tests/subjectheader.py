@@ -56,6 +56,16 @@ class TestSubjectHeaders(TestCase):
         r = sh.strip_subject('[faux] I am a fish', 'faux')
         self.assertEqual('I am a fish', r)
 
+    def test_strip_subject_no_list_title(self):
+        'Some lists do not have a list title'
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+
+        r = sh.strip_subject('[faux] I am a fish', '')
+        self.assertEqual('[faux] I am a fish', r)
+
+        r1 = sh.strip_subject('[faux] I am a fish', None)
+        self.assertEqual('[faux] I am a fish', r1)
+
     def test_strip_subject_missing(self):
         sh = SubjectHeader(FauxGroup, FauxRequest)
 
