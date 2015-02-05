@@ -215,11 +215,12 @@ described in :rfc:`2369#section-3.6`.'''
 class ListID(SimpleAddHeader):
     '''Create a :mailheader:`List-ID` header
 
-The :mailheader:`List-ID` header contains an ID for the group, as described
-in :rfc:`2919`.
+The :mailheader:`List-ID` header contains the name and an ID for the group,
+as described in :rfc:`2919`.
 
 :Note: The actial ID of the group is different from what is listed in the
-       :mailheader:`List-ID` header.'''
+       :mailheader:`List-ID` header. The latter is concatenated with the
+       ``netloc`` of the site URL in order to make a globally-unique ID.'''
     def modify_header(self, *args):
         '''Generate the content for the :mailheader:`List-ID` header.
 

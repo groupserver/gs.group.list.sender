@@ -1,10 +1,11 @@
 Headers
 =======
 
+.. currentmodule:: gs.group.list.sender
+
 The headers of an email message are modified before being
 sent. The headers are either added, deleted, or changed. The
-:func:`gs.group.list.sender.modify_headers` function performs the
-modification.
+:func:`modify_headers` function performs the modification.
 
 .. autofunction:: gs.group.list.sender.modify_headers
 
@@ -16,8 +17,7 @@ Header adaptor
 Each header that needs to be modified is represented by a
 named-adaptor. The adaptor is a class that adapts a ``group`` and
 a ``request`` and provides an
-:class:`gs.group.list.sender.interfaces.IEmailHeaderModifier`
-interface.
+:class:`.interfaces.IEmailHeaderModifier` interface.
 
 .. py:class:: gs.group.list.sender.interfaces.IEmailHeaderModifier(group, request)
 
@@ -38,9 +38,9 @@ interface.
       :rtype: ``unicode``, ``bytes``, or ``None``
 
 The :meth:`modify_header` method can return either a ``unicode``,
-``bytes`` [#bytes]_, or ``None``. The
-:func:`gs.group.list.sender.modify_headers` function will change
-the header in one of three ways depending on the return type.
+``bytes`` [#bytes]_, or ``None``. The :func:`modify_headers`
+function will change the header in one of three ways depending on
+the return type.
 
 ``None``:
     The header is deleted.
@@ -67,7 +67,7 @@ the ``Precedence`` header:
 :Note: The adaptors are **named**, with the name being the name
        of the header.
 
-The :mod:`gs.group.list.sender` provides fourteen adaptors (see
+The :mod:`gs.group.list.sender` provides fifteen adaptors (see
 :doc:`standard`).
 
 .. [#bytes] In Python 2 ``bytes`` is a synonym for ``str``.
