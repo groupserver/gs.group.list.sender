@@ -7,6 +7,7 @@ Contents:
    :maxdepth: 2
 
    sender
+   recipients
    headers
    standard
    HISTORY
@@ -20,7 +21,7 @@ The email notification is *mostly* made up of the original post,
 but the headers are highly modified (see :doc:`headers`). That
 modification is the job of this product.
 
-Once the messages are batched the are determined (see
+Once the messages are batched the recipients are determined (see
 :doc:`recipients`), organised into batches, and then the email is
 sent out using ``SMTP``.
 
