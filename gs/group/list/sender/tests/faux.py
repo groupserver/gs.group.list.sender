@@ -40,6 +40,7 @@ class FauxGroupInfo(object):
     name = 'Faux Group'
     url = 'http://groups.example.com/groups/faux'
     siteInfo = FauxSiteInfo()
+    id = 'faux'
 
     def get_property(*args):
         return 'faux'

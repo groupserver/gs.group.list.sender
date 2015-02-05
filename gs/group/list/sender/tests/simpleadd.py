@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -17,7 +17,7 @@ from mock import patch
 from unittest import TestCase
 from gs.group.list.sender.headers.simpleadd import (
     Precedence, XMailer, Sender, ListUnsubscribe, ListHelp, ListSubscribe,
-    ListPost, ListOwner, ListArchive)
+    ListPost, ListOwner, ListArchive, ListID)
 from .faux import (FauxGroup, FauxRequest, FauxGroupInfo,
                    FauxMailingListInfo)
 
@@ -129,4 +129,16 @@ class TestStaticHeaders(TestCase):
         la = ListArchive(FauxGroup, FauxRequest)
         r = la.modify_header()
         expected = '<http://groups.example.com/groups/faux>'
+        self.assertEqual(expected, r)
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_list_id(self, IGSMailingListInfo, IGSGroupInfo):
+        '''Test the ``List-ID`` header'''
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
+
+        la = ListID(FauxGroup, FauxRequest)
+        r = la.modify_header()
+        expected = 'Faux Group <faux.groups.example.com>'
         self.assertEqual(expected, r)

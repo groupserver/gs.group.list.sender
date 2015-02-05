@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,6 +15,10 @@
 from __future__ import absolute_import, unicode_literals
 from email.header import Header
 from email.utils import formataddr
+try:
+    from urllib import parse as urlparse  # Python 3
+except ImportError:
+    from urlparse import urlparse  # Python 2
 from zope.cachedescriptors.property import Lazy
 from gs.core import to_unicode_or_bust
 from Products.GSGroup.interfaces import (IGSGroupInfo, IGSMailingListInfo)
@@ -205,4 +209,24 @@ described in :rfc:`2369#section-3.6`.'''
 :rtype: unicode'''
         addr = self.groupInfo.url
         retval = '<{0}>'.format(addr)
+        return retval
+
+
+class ListID(SimpleAddHeader):
+    '''Create a :mailheader:`List-ID` header
+
+The :mailheader:`List-ID` header contains an ID for the group, as described
+in :rfc:`2919`.
+
+:Note: The actial ID of the group is different from what is listed in the
+       :mailheader:`List-ID` header.'''
+    def modify_header(self, *args):
+        '''Generate the content for the :mailheader:`List-ID` header.
+
+:returns: The ID of the group concatenated with the ``netloc`` of the site
+          URL.
+:rtype: unicode'''
+        canonicalHost = urlparse(self.groupInfo.siteInfo.url).netloc
+        retval = '{groupInfo.name} <{groupInfo.id}.{canonicalHost}>'.format(
+            groupInfo=self.groupInfo, canonicalHost=canonicalHost)
         return retval
