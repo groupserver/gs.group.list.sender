@@ -15,6 +15,7 @@
 from __future__ import absolute_import, unicode_literals
 from re import (compile as re_compile, sub, escape)
 from string import whitespace
+from zope.cachedescriptors.property import Lazy
 from gs.core import to_unicode_or_bust
 from .simpleadd import SimpleAddHeader
 
@@ -37,6 +38,37 @@ object) to the :mailheader:`Subject` header if it is not already there.'''
     annoyingCharsL = annoyingChars + '\u202A\u202D'
     annoyingCharsR = annoyingChars + '\u202B\u202E'
 
+    @Lazy
+    def listTitle(self):
+        '''The title of the list
+
+        :returns: The title of the list
+        :rtype: unicode
+
+        The title of the list is defined as
+
+        * The ``short_name`` of the group, or if that is not set
+
+          + The ``shortName`` of the group, or if that is not set
+
+            = The ``title`` of the mailing list, or if that is not set
+
+              - The ``title`` of the group, or if that is not set
+
+                o The ID of the group.'''
+
+        t = self.groupInfo.get_property(
+            'short_name',
+            self.groupInfo.get_property(
+                'shortName',
+                self.listInfo.mlist.getProperty(
+                    'title',
+                    self.groupInfo.get_property(
+                        'title',
+                        self.groupInfo.id))))
+        retval = to_unicode_or_bust(t)
+        return retval
+
     def modify_header(self, email):
         '''Generate the content for the :mailheader:`Subject` header
 
@@ -46,10 +78,9 @@ object) to the :mailheader:`Subject` header if it is not already there.'''
           will contain the title of the mailing-list object in
           square-brackets.'''
         subject = email['Subject']
-        listTitle = to_unicode_or_bust(self.groupInfo.get_property(
-            'short_name', self.listInfo.mlist.title_or_id()))
+
         s = to_unicode_or_bust(subject)
-        newSubj = self.strip_subject(s, listTitle)
+        newSubj = self.strip_subject(s, self.listTitle)
 
         re = ''
         if self.is_reply(newSubj):
@@ -57,7 +88,7 @@ object) to the :mailheader:`Subject` header if it is not already there.'''
             re = 'Re: '
 
         r = '{re}[{groupName}] {subject}'
-        retval = r.format(re=re, groupName=listTitle, subject=newSubj)
+        retval = r.format(re=re, groupName=self.listTitle, subject=newSubj)
         return retval
 
     def strip_subject(self, subj, listTitle):
