@@ -6,7 +6,8 @@ Changelog
 
 * Adding support for the :mailheader:`List-ID` header, as
   described in :rfc:`2919`
-
+* Adding more fall-backs for the short title with the 
+  :mailheader:`Subject` header
 
 1.0.2 (2015-02-02)
 ------------------
