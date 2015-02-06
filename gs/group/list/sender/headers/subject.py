@@ -57,15 +57,11 @@ object) to the :mailheader:`Subject` header if it is not already there.'''
 
                 o The ID of the group.'''
 
-        t = self.groupInfo.get_property(
-            'short_name',
-            self.groupInfo.get_property(
-                'shortName',
-                self.listInfo.mlist.getProperty(
-                    'title',
-                    self.groupInfo.get_property(
-                        'title',
-                        self.groupInfo.id))))
+        t = (self.groupInfo.get_property('short_name', None)
+             or self.groupInfo.get_property('shortName', None)
+             or self.listInfo.mlist.getProperty('title', None)
+             or self.groupInfo.get_property('title', None)
+             or self.groupInfo.id)
         retval = to_unicode_or_bust(t)
         return retval
 

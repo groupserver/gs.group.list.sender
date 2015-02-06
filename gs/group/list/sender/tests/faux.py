@@ -50,6 +50,9 @@ class FauxMList(object):
     def title_or_id(*args):
         return 'faux mlist'
 
+    def getProperty(*args):
+        return 'a property'
+
 
 class FauxMailingListInfo(object):
     def get_property(self, *args):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -22,6 +22,73 @@ from .faux import (FauxGroup, FauxRequest, FauxGroupInfo, get_email,
 
 class TestSubjectHeaders(TestCase):
     'Test the subject header class'
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_title_short_name(self, IGSMailingListInfo, IGSGroupInfo):
+        '''Test we return the short_name attribute in preference'''
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        IGSGroupInfo.return_value.get_property.side_effect = [
+            'short name', 'another short name', 'group title']
+        IGSGroupInfo.return_value.id = 'id'
+        mlist = IGSMailingListInfo.return_value.mlist
+        mlist.getProperty.return_value = 'mlist short name'
+
+        r = sh.listTitle
+        self.assertEqual(r, 'short name')
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_title_shortName(self, IGSMailingListInfo, IGSGroupInfo):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        IGSGroupInfo.return_value.get_property.side_effect = [
+            None, 'another short name', 'group title']
+        IGSGroupInfo.return_value.id = 'id'
+        mlist = IGSMailingListInfo.return_value.mlist
+        mlist.getProperty.return_value = 'mlist short name'
+
+        r = sh.listTitle
+        self.assertEqual(r, 'another short name')
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_title_list(self, IGSMailingListInfo, IGSGroupInfo):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        IGSGroupInfo.return_value.get_property.side_effect = [
+            None, None, 'group title']
+        IGSGroupInfo.return_value.id = 'id'
+        mlist = IGSMailingListInfo.return_value.mlist
+        mlist.getProperty.return_value = 'mlist short name'
+
+        r = sh.listTitle
+        self.assertEqual(r, 'mlist short name')
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_title_group(self, IGSMailingListInfo, IGSGroupInfo):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        IGSGroupInfo.return_value.get_property.side_effect = [
+            None, None, 'group title']
+        IGSGroupInfo.return_value.id = 'id'
+        mlist = IGSMailingListInfo.return_value.mlist
+        mlist.getProperty.return_value = None
+
+        r = sh.listTitle
+        self.assertEqual(r, 'group title')
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_title_id(self, IGSMailingListInfo, IGSGroupInfo):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        IGSGroupInfo.return_value.get_property.side_effect = [
+            None, None, None]
+        IGSGroupInfo.return_value.id = 'id'
+        mlist = IGSMailingListInfo.return_value.mlist
+        mlist.getProperty.return_value = None
+
+        r = sh.listTitle
+        self.assertEqual(r, 'id')
+
     def test_is_reply_no_re(self):
         sh = SubjectHeader(FauxGroup, FauxRequest)
 
