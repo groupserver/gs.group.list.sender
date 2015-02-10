@@ -95,6 +95,9 @@ object) to the :mailheader:`Subject` header if it is not already there.'''
 :returns: The subject stripped of the name, or ``No subject`` if
           ``subj`` is ``None``.
 :rtype: unicode'''
+        subj = subj if subj is not None else ''
+        listTitle = listTitle if listTitle is not None else ''
+
         if listTitle:
             elt = escape(listTitle)
             subject = sub('\[%s\]' % elt, '', subj).strip()
