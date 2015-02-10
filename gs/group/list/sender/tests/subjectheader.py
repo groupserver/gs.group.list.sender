@@ -123,6 +123,12 @@ class TestSubjectHeaders(TestCase):
         r = sh.strip_subject('[faux] I am a fish', 'faux')
         self.assertEqual('I am a fish', r)
 
+    def test_strip_subject_unicode(self):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+
+        r = sh.strip_subject("[écrire] I am a fish", 'écrire')
+        self.assertEqual('I am a fish', r)
+
     def test_strip_subject_no_list_title(self):
         'Some lists do not have a list title'
         sh = SubjectHeader(FauxGroup, FauxRequest)
@@ -137,6 +143,30 @@ class TestSubjectHeaders(TestCase):
         sh = SubjectHeader(FauxGroup, FauxRequest)
 
         r = sh.strip_subject('', 'faux')
+        self.assertEqual('No subject', r)
+
+    def test_strip_subject_unicode_list_title_only(self):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+
+        r = sh.strip_subject("I am a fish", 'écrire')
+        self.assertEqual('I am a fish', r)
+
+    def test_strip_subject_subj_none(self):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+
+        r = sh.strip_subject(None, 'écrire')
+        self.assertEqual('No subject', r)
+
+    def test_strip_subject_listTitle_none(self):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+
+        r = sh.strip_subject('I am a fish', None)
+        self.assertEqual('I am a fish', r)
+
+    def test_strip_subject_all_none(self):
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+
+        r = sh.strip_subject(None, None)
         self.assertEqual('No subject', r)
 
     def test_strip_subject_space(self):
