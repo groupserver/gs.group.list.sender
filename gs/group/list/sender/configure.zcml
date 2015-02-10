@@ -67,6 +67,13 @@
     provides=".interfaces.IEmailHeaderModifier"
     factory=".headers.simpleadd.ListArchive" />
 
+  <adapter
+    name="List-ID"
+    for="gs.group.base.interfaces.IGSGroupMarker
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+    provides=".interfaces.IEmailHeaderModifier"
+    factory=".headers.simpleadd.ListID" />
+
   <!-- The three complex headers -->
   <adapter
     name="Subject"
