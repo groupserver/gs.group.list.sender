@@ -37,7 +37,7 @@ class TestFromHeader(TestCase):
 
         fh = FromHeader(FauxGroup, FauxRequest)
         r = fh.get_user_address(user, 'groups.example.com')
-        self.assertEqual('member-0a1b2c3d@groups.example.com', r)
+        self.assertEqual('p-0a1b2c3d@groups.example.com', r)
 
     def test_set_formally_from(self):
         e = get_email('Faux')
@@ -127,7 +127,7 @@ from a domain controlled by DMARC-reject'''
 
         self.assertIn('X-GS-Formerly-From', e)
         self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
-        expected = '"A. B. Member" <member-a0b1c2@groups.example.com>'
+        expected = '"A. B. Member" <p-a0b1c2@groups.example.com>'
         self.assertEqual(expected, r)
 
     def test_dmarc_quarantine_anon(self):
@@ -148,7 +148,7 @@ from a domain controlled by DMARC-quarantine'''
 
         self.assertIn('X-GS-Formerly-From', e)
         self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
-        expected = '"A. B. Member" <member-a0b1c2@groups.example.com>'
+        expected = '"A. B. Member" <p-a0b1c2@groups.example.com>'
         self.assertEqual(expected, r)
 
     @patch('gs.group.list.sender.headers.frm.createObject')

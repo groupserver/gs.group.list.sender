@@ -37,6 +37,7 @@ install_requires = [
     'gs.dmarc',
     'gs.email',
     'gs.group.member.base',
+    'gs.profile.email.relay',
     'Products.GSGroup',
 ]
 

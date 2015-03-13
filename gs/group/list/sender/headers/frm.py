@@ -21,6 +21,7 @@ from zope.component import createObject
 from gs.cache import cache
 from gs.core import to_unicode_or_bust
 from gs.dmarc import (lookup_receiver_policy, ReceiverPolicy)
+from gs.profile.email.relay.relayer import RELAY_ADDRESS_PREFIX
 from .simpleadd import SimpleAddHeader
 UTF8 = 'utf-8'
 
@@ -68,10 +69,12 @@ host has DMARC turned on.
 :param user: The user.
 :type user: :class:`Products.CustomUserFolder.CustomUser`
 :param unicode domain: The host of the group.
-:returns: An email address of the form ``member-{userId}@{domain}``.
+:returns: An email address of the form
+          ``{RELAY_ADDRESS_PREFIX}-{userId}@{domain}``.
 :rtype: unicode'''
-        r = 'member-{userId}@{domain}'
-        retval = r.format(userId=user.getId(), domain=domain)
+        r = '{prefix}{userId}@{domain}'
+        retval = r.format(prefix=RELAY_ADDRESS_PREFIX, userId=user.getId(),
+                          domain=domain)
         return retval
 
     @staticmethod
