@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2.0 (2014-03-17)
+------------------
+
+* Acquiring the relay-address prefix from a configuration file,
+  rather than hard-coding it in the :mailheader:`From` header
+
 1.1.0 (2014-02-05)
 ------------------
 
