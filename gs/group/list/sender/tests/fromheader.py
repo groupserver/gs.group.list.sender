@@ -32,7 +32,7 @@ class TestFromHeader(TestCase):
 
     @patch.object(FromHeader, 'config')
     def test_get_user_address(self, configMock):
-        configMock.get.return_value = {'relay-address-prefix': None}
+        configMock.get.return_value = {}
         user = MagicMock()
         gid = user.getId
         gid.return_value = '0a1b2c3d'
@@ -124,7 +124,7 @@ domain controlled by DMARC-reject'''
     def test_dmarc_reject_user(self, configMock):
         '''Test that the address is rewritten for a member when posting
 from a domain controlled by DMARC-reject'''
-        configMock.get.return_value = {'relay-address-prefix': None}
+        configMock.get.return_value = {}
         user = MagicMock()
         user.getId.return_value = 'a0b1c2'
         r, e = self.dmarc_modify_header(user, ReceiverPolicy.reject)
@@ -147,7 +147,7 @@ domain controlled by DMARC-quarantine'''
     def test_dmarc_quarantine_user(self, configMock):
         '''Test that the address is rewritten for a member when posting
 from a domain controlled by DMARC-quarantine'''
-        configMock.get.return_value = {'relay-address-prefix': None}
+        configMock.get.return_value = {}
         user = MagicMock()
         user.getId.return_value = 'a0b1c2'
         r, e = self.dmarc_modify_header(user, ReceiverPolicy.quarantine)
