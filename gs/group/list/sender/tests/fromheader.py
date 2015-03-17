@@ -30,7 +30,9 @@ class TestFromHeader(TestCase):
                                 'groups.example.com')
         self.assertEqual('anon-person-at-example-com@groups.example.com', r)
 
-    def test_get_user_address(self):
+    @patch.object(FromHeader, 'config')
+    def test_get_user_address(self, configMock):
+        configMock.get.return_value = {'relay-address-prefix': None}
         user = MagicMock()
         gid = user.getId
         gid.return_value = '0a1b2c3d'
@@ -118,9 +120,11 @@ domain controlled by DMARC-reject'''
         self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
         self.assertEqual('anon-member-at-example-com@groups.example.com', r)
 
-    def test_dmarc_reject_user(self):
+    @patch.object(FromHeader, 'config')
+    def test_dmarc_reject_user(self, configMock):
         '''Test that the address is rewritten for a member when posting
 from a domain controlled by DMARC-reject'''
+        configMock.get.return_value = {'relay-address-prefix': None}
         user = MagicMock()
         user.getId.return_value = 'a0b1c2'
         r, e = self.dmarc_modify_header(user, ReceiverPolicy.reject)
@@ -139,9 +143,11 @@ domain controlled by DMARC-quarantine'''
         self.assertEqual(e['X-GS-Formerly-From'], 'member@example.com')
         self.assertEqual('anon-member-at-example-com@groups.example.com', r)
 
-    def test_dmarc_quarantine_user(self):
+    @patch.object(FromHeader, 'config')
+    def test_dmarc_quarantine_user(self, configMock):
         '''Test that the address is rewritten for a member when posting
 from a domain controlled by DMARC-quarantine'''
+        configMock.get.return_value = {'relay-address-prefix': None}
         user = MagicMock()
         user.getId.return_value = 'a0b1c2'
         r, e = self.dmarc_modify_header(user, ReceiverPolicy.quarantine)

@@ -18,10 +18,11 @@ from email.utils import (parseaddr, formataddr)
 from logging import getLogger
 log = getLogger('gs.group.list.sender.header.from')
 from zope.component import createObject
+from zope.cachedescriptors.property import Lazy
 from gs.cache import cache
+from gs.config import (Config, getInstanceId)
 from gs.core import to_unicode_or_bust
 from gs.dmarc import (lookup_receiver_policy, ReceiverPolicy)
-from gs.profile.email.relay.relayer import RELAY_ADDRESS_PREFIX
 from .simpleadd import SimpleAddHeader
 UTF8 = 'utf-8'
 
@@ -32,7 +33,8 @@ class FromHeader(SimpleAddHeader):
 :param group: A group object.
 :type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
 :param request: An HTTP request.
-:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+:type request:
+    :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
 
 DMARC causes issues for groups. Lists usually set the :mailheader:`From`
 to the email address of the person who wrote the message (contrast to the
@@ -50,6 +52,20 @@ host has DMARC turned on.
 '''
     actualPolicies = (ReceiverPolicy.quarantine, ReceiverPolicy.reject)
 
+    @Lazy
+    def config(self):
+        instanceId = getInstanceId()
+        retval = Config(instanceId)
+        return retval
+
+    @Lazy
+    def relayAddressPrefix(self):
+        self.config.set_schema('smtp', {'relay-address-prefix': str})
+        ws = self.config.get('smtp')
+        retval = ws['relay-address-prefix']
+        retval = retval if retval else 'p-'
+        return retval
+
     @staticmethod
     @cache('gs.group.list.sender.header.from.dmarc', lambda h: h, 7 * 60)
     def get_dmarc_policy_for_host(host):
@@ -62,8 +78,7 @@ host has DMARC turned on.
         retval = acl_users.get_userByEmail(email)
         return retval
 
-    @staticmethod
-    def get_user_address(user, domain):
+    def get_user_address(self, user, domain):
         '''Get a fake address for a member of a group.
 
 :param user: The user.
@@ -73,8 +88,8 @@ host has DMARC turned on.
           ``{RELAY_ADDRESS_PREFIX}-{userId}@{domain}``.
 :rtype: unicode'''
         r = '{prefix}{userId}@{domain}'
-        retval = r.format(prefix=RELAY_ADDRESS_PREFIX, userId=user.getId(),
-                          domain=domain)
+        retval = r.format(prefix=self.relayAddressPrefix,
+                          userId=user.getId(), domain=domain)
         return retval
 
     @staticmethod
