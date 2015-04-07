@@ -13,10 +13,9 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
-from re import (compile as re_compile, sub, escape)
-from string import whitespace
 from zope.cachedescriptors.property import Lazy
 from gs.core import to_unicode_or_bust
+from gs.group.list.base import EmailMessage
 from .simpleadd import SimpleAddHeader
 
 
@@ -33,10 +32,6 @@ It is convinient to add the group-name to the :mailheader:`Subject` header
 so recipients of the email message can easily identify posts from the
 group. This adaptor adds the *short name* (the ``title`` of the list
 object) to the :mailheader:`Subject` header if it is not already there.'''
-    paraRegexep = re_compile('[\u2028\u2029]+')
-    annoyingChars = whitespace + '\uFFF9\uFFFA\uFFFB\uFFFC\uFEFF'
-    annoyingCharsL = annoyingChars + '\u202A\u202D'
-    annoyingCharsR = annoyingChars + '\u202B\u202E'
 
     @Lazy
     def listTitle(self):
@@ -73,47 +68,12 @@ object) to the :mailheader:`Subject` header if it is not already there.'''
 :returns: The new value for the :mailheader:`Subject` header, which
           will contain the title of the mailing-list object in
           square-brackets.'''
-        subject = email['Subject']
-
-        s = to_unicode_or_bust(subject)
-        newSubj = self.strip_subject(s, self.listTitle)
-
-        re = ''
-        if self.is_reply(newSubj):
-            newSubj = newSubj[3:].strip()
-            re = 'Re: '
-
+        re = 'Re: ' if self.is_reply(email['Subject']) else ''
+        em = EmailMessage(email.as_string(), self.listTitle,
+                          self.groupInfo.id, self.groupInfo.siteInfo.id)
         r = '{re}[{groupName}] {subject}'
-        retval = r.format(re=re, groupName=self.listTitle, subject=newSubj)
-        return retval
-
-    def strip_subject(self, subj, listTitle):
-        '''Remove the list title from the subject
-
-:param unicode subj: The subject to modify
-:param unicode listTitle: The title of the mailing-list object
-:returns: The subject stripped of the name, or ``No subject`` if
-          ``subj`` is ``None``.
-:rtype: unicode'''
-        subj = subj if subj is not None else ''
-        listTitle = listTitle if listTitle is not None else ''
-
-        if listTitle:
-            elt = escape(listTitle)
-            subject = sub('\[%s\]' % elt, '', subj).strip()
-        else:
-            subject = subj
-
-        subject = self.paraRegexep.sub(' ', subject)
-        # compress up the whitespace into a single space
-        subject = sub('\s+', ' ', subject).strip()
-        subject = subject.lstrip(self.annoyingCharsL)
-        subject = subject.rstrip(self.annoyingCharsR)
-
-        if len(subject) <= 0:
-            retval = 'No subject'
-        else:
-            retval = subject
+        retval = r.format(re=re, groupName=self.listTitle,
+                          subject=em.subject)
         return retval
 
     @staticmethod
