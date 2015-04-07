@@ -31,6 +31,7 @@ class FauxGroup(object):
 class FauxSiteInfo(object):
     name = 'Faux Site'
     url = 'http://groups.example.com'
+    id = 'example'
 
     def get_support_email(*args):
         return 'support@groups.example.com'

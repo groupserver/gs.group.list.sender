@@ -117,63 +117,128 @@ class TestSubjectHeaders(TestCase):
         r = sh.is_reply(subj)
         self.assertFalse(r)
 
-    def test_strip_subject(self):
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add(self, IGSMailingListInfo, IGSGroupInfo):
+        'Ensure the group-name is added'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('I am a fish')
 
-        r = sh.strip_subject('[faux] I am a fish', 'faux')
-        self.assertEqual('I am a fish', r)
-
-    def test_strip_subject_unicode(self):
-        sh = SubjectHeader(FauxGroup, FauxRequest)
-
-        r = sh.strip_subject("[écrire] I am a fish", 'écrire')
-        self.assertEqual('I am a fish', r)
-
-    def test_strip_subject_no_list_title(self):
-        'Some lists do not have a list title'
-        sh = SubjectHeader(FauxGroup, FauxRequest)
-
-        r = sh.strip_subject('[faux] I am a fish', '')
+        r = sh.modify_header(e)
         self.assertEqual('[faux] I am a fish', r)
 
-        r1 = sh.strip_subject('[faux] I am a fish', None)
-        self.assertEqual('[faux] I am a fish', r1)
-
-    def test_strip_subject_missing(self):
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_once(self, IGSMailingListInfo, IGSGroupInfo):
+        'Ensure the group-name is added once only'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('[faux] I am a fish')
 
-        r = sh.strip_subject('', 'faux')
-        self.assertEqual('No subject', r)
+        r = sh.modify_header(e)
+        self.assertEqual('[faux] I am a fish', r)
 
-    def test_strip_subject_unicode_list_title_only(self):
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_re(self, IGSMailingListInfo, IGSGroupInfo):
+        'Ensure the group-name is added when the Re is involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('Re: I am a fish')
 
-        r = sh.strip_subject("I am a fish", 'écrire')
-        self.assertEqual('I am a fish', r)
+        r = sh.modify_header(e)
+        self.assertEqual('Re: [faux] I am a fish', r)
 
-    def test_strip_subject_subj_none(self):
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_re_once(self, IGSMailingListInfo, IGSGroupInfo):
+        'Ensure the group-name is added once when the Re is involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('Re: [faux] I am a fish')
 
-        r = sh.strip_subject(None, 'écrire')
-        self.assertEqual('No subject', r)
+        r = sh.modify_header(e)
+        self.assertEqual('Re: [faux] I am a fish', r)
 
-    def test_strip_subject_listTitle_none(self):
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_space(self, IGSMailingListInfo, IGSGroupInfo):
+        'Ensure the group-name is added once when spaces are involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('   [faux] I   am a fish')
 
-        r = sh.strip_subject('I am a fish', None)
-        self.assertEqual('I am a fish', r)
+        r = sh.modify_header(e)
+        self.assertEqual('[faux] I am a fish', r)
 
-    def test_strip_subject_all_none(self):
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_fwd(self, IGSMailingListInfo, IGSGroupInfo):
+        'Ensure the group-name is added once when "Fwd:" is involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('Fwd: I am a fish')
 
-        r = sh.strip_subject(None, None)
-        self.assertEqual('No subject', r)
+        r = sh.modify_header(e)
+        self.assertEqual('[faux] I am a fish', r)
 
-    def test_strip_subject_space(self):
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_fwd_bracket(self, IGSMailingListInfo,
+                                        IGSGroupInfo):
+        'Ensure the group-name is added once when "[Fwd: ]" is involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('[Fwd: I am a fish]')
 
-        r = sh.strip_subject('   [faux] I   am a fish', 'faux')
-        self.assertEqual('I am a fish', r)
+        r = sh.modify_header(e)
+        self.assertEqual('[faux] I am a fish', r)
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_fwd_re(self, IGSMailingListInfo, IGSGroupInfo):
+        'Ensure the group-name is added once when "Fwd: Re:" is involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('Fwd: Re: I am a fish')
+
+        r = sh.modify_header(e)
+        self.assertEqual('[faux] I am a fish', r)
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_fwd_bracket_re(self, IGSMailingListInfo,
+                                           IGSGroupInfo):
+        'Ensure the group-name is added once when "[Fwd: Re: ]" is involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('[Fwd: Re: I am a fish]')
+
+        r = sh.modify_header(e)
+        self.assertEqual('[faux] I am a fish', r)
+
+    @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
+    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
+    def test_group_name_add_re_fwd_bracket(self, IGSMailingListInfo,
+                                           IGSGroupInfo):
+        'Ensure the group-name is added once when "Re: [Fwd: ]" is involved'
+        IGSGroupInfo.return_value = FauxGroupInfo()
+        IGSMailingListInfo.return_value = FauxMailingListInfo()
+        sh = SubjectHeader(FauxGroup, FauxRequest)
+        e = get_email('Re: [Fwd: I am a fish]')
+
+        r = sh.modify_header(e)
+        self.assertEqual('Re: [faux] I am a fish', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
