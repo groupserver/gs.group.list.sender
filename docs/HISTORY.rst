@@ -1,13 +1,20 @@
 Changelog
 =========
 
-1.2.0 (2014-03-17)
+1.2.1 (2015-04-07)
+------------------
+
+* Switch to using the ``subject``
+  :class:`gs.group.list.base.EmailMessage` for the basis of the
+  :mailheader:`Subject`
+
+1.2.0 (2015-03-17)
 ------------------
 
 * Acquiring the relay-address prefix from a configuration file,
   rather than hard-coding it in the :mailheader:`From` header
 
-1.1.0 (2014-02-05)
+1.1.0 (2015-02-05)
 ------------------
 
 * Adding support for the :mailheader:`List-ID` header, as
@@ -37,3 +44,5 @@ Changelog
 Initial version. Prior to the creation of this product the
 :class:`Products.XWFMailingListManager.XWFMailingList` class
 generated the list of recipients and modified the email headers.
+
+..  LocalWords:  Changelog
