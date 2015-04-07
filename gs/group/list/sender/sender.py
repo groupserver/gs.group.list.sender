@@ -25,7 +25,8 @@ class Sender(object):
 :param group: A group object.
 :type group: :class:`gs.group.base.interfaces.IGSGroupMarker`
 :param request: An HTTP request.
-:type request: :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
+:type request:
+    :class:`zope.publisher.interfaces.browser.IDefaultBrowserLayer`
 '''
     def __init__(self, group, request):
         self.context = self.group = group
