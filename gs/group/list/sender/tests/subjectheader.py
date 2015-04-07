@@ -92,28 +92,28 @@ class TestSubjectHeaders(TestCase):
     def test_is_reply_no_re(self):
         sh = SubjectHeader(FauxGroup, FauxRequest)
 
-        subj = 'I am a fish'
+        subj = 'Ethel the Frog'
         r = sh.is_reply(subj)
         self.assertFalse(r)
 
     def test_is_reply_re(self):
         sh = SubjectHeader(FauxGroup, FauxRequest)
 
-        subj = 'Re: I am a fish'
+        subj = 'Re: Ethel the Frog'
         r = sh.is_reply(subj)
         self.assertTrue(r)
 
     def test_is_reply_re_lower(self):
         sh = SubjectHeader(FauxGroup, FauxRequest)
 
-        subj = 're: I am a fish'
+        subj = 're: Ethel the Frog'
         r = sh.is_reply(subj)
         self.assertTrue(r)
 
     def test_is_reply_re_end(self):
         sh = SubjectHeader(FauxGroup, FauxRequest)
 
-        subj = 'I am a fish re:'
+        subj = 'Ethel the Frog re:'
         r = sh.is_reply(subj)
         self.assertFalse(r)
 
@@ -124,10 +124,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('I am a fish')
+        e = get_email('Ethel the Frog')
 
         r = sh.modify_header(e)
-        self.assertEqual('[faux] I am a fish', r)
+        self.assertEqual('[faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -136,10 +136,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('[faux] I am a fish')
+        e = get_email('[faux] Ethel the Frog')
 
         r = sh.modify_header(e)
-        self.assertEqual('[faux] I am a fish', r)
+        self.assertEqual('[faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -148,10 +148,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('Re: I am a fish')
+        e = get_email('Re: Ethel the Frog')
 
         r = sh.modify_header(e)
-        self.assertEqual('Re: [faux] I am a fish', r)
+        self.assertEqual('Re: [faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -160,10 +160,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('Re: [faux] I am a fish')
+        e = get_email('Re: [faux] Ethel the Frog')
 
         r = sh.modify_header(e)
-        self.assertEqual('Re: [faux] I am a fish', r)
+        self.assertEqual('Re: [faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -172,10 +172,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('   [faux] I   am a fish')
+        e = get_email('   [faux] Ethel   the Frog')
 
         r = sh.modify_header(e)
-        self.assertEqual('[faux] I am a fish', r)
+        self.assertEqual('[faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -184,10 +184,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('Fwd: I am a fish')
+        e = get_email('Fwd: Ethel the Frog')
 
         r = sh.modify_header(e)
-        self.assertEqual('[faux] I am a fish', r)
+        self.assertEqual('[faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -197,10 +197,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('[Fwd: I am a fish]')
+        e = get_email('[Fwd: Ethel the Frog]')
 
         r = sh.modify_header(e)
-        self.assertEqual('[faux] I am a fish', r)
+        self.assertEqual('[faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -209,10 +209,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('Fwd: Re: I am a fish')
+        e = get_email('Fwd: Re: Ethel the Frog')
 
         r = sh.modify_header(e)
-        self.assertEqual('[faux] I am a fish', r)
+        self.assertEqual('[faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -222,10 +222,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('[Fwd: Re: I am a fish]')
+        e = get_email('[Fwd: Re: Ethel the Frog]')
 
         r = sh.modify_header(e)
-        self.assertEqual('[faux] I am a fish', r)
+        self.assertEqual('[faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -235,10 +235,10 @@ class TestSubjectHeaders(TestCase):
         IGSGroupInfo.return_value = FauxGroupInfo()
         IGSMailingListInfo.return_value = FauxMailingListInfo()
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('Re: [Fwd: I am a fish]')
+        e = get_email('Re: [Fwd: Ethel the Frog]')
 
         r = sh.modify_header(e)
-        self.assertEqual('Re: [faux] I am a fish', r)
+        self.assertEqual('Re: [faux] Ethel the Frog', r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
@@ -248,9 +248,9 @@ class TestSubjectHeaders(TestCase):
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('I am a fish')
+        e = get_email('Ethel the Frog')
         r = sh.modify_header(e)
-        expected = '[faux] I am a fish'
+        expected = '[faux] Ethel the Frog'
         self.assertEqual(expected, r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
@@ -261,9 +261,9 @@ class TestSubjectHeaders(TestCase):
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('Re: I am a fish')
+        e = get_email('Re: Ethel the Frog')
         r = sh.modify_header(e)
-        expected = 'Re: [faux] I am a fish'
+        expected = 'Re: [faux] Ethel the Frog'
         self.assertEqual(expected, r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
@@ -275,9 +275,9 @@ name already'''
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('[faux] I am a fish')
+        e = get_email('[faux] Ethel the Frog')
         r = sh.modify_header(e)
-        expected = '[faux] I am a fish'
+        expected = '[faux] Ethel the Frog'
         self.assertEqual(expected, r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
@@ -289,7 +289,7 @@ the group name'''
         IGSMailingListInfo.return_value = FauxMailingListInfo()
 
         sh = SubjectHeader(FauxGroup, FauxRequest)
-        e = get_email('Re: [faux] I am a fish')
+        e = get_email('Re: [faux] Ethel the Frog')
         r = sh.modify_header(e)
-        expected = 'Re: [faux] I am a fish'
+        expected = 'Re: [faux] Ethel the Frog'
         self.assertEqual(expected, r)
