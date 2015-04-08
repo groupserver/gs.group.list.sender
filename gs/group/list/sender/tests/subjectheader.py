@@ -142,6 +142,7 @@ class TestSubjectHeaders(TestCase):
         'Ensure the group-name is added when the Re is involved'
         self.assert_subject('Re: [faux] Ethel the Frog',
                             'Re: Ethel the Frog')
+
     def test_group_name_add_re_once(self):
         'Ensure the group-name is added once when the Re is involved'
         self.assert_subject('Re: [faux] Ethel the Frog',
@@ -170,7 +171,23 @@ class TestSubjectHeaders(TestCase):
         'Ensure the group-name is added once when "[Fwd: Re: ]" is involved'
         self.assert_subject('[faux] Ethel the Frog',
                             '[Fwd: Re: Ethel the Frog]')
+
     def test_group_name_add_re_fwd_bracket(self):
         'Ensure the group-name is added once when "Re: [Fwd: ]" is involved'
         self.assert_subject('Re: [faux] Ethel the Frog',
                             'Re: [Fwd: Ethel the Frog]')
+
+    def test_other_group_name(self):
+        'Is the group-name is added when another group name is convolved?'
+        self.assert_subject('[faux] [other] Ethel the Frog',
+                            '[other] Ethel the Frog')
+
+    def test_other_group_name_fwd(self):
+        'Is the group-name is added when another group name is convolved?'
+        self.assert_subject('[faux] [other] Ethel the Frog',
+                            'Fw: [other] Ethel the Frog')
+
+    def test_other_group_name_fwd_bracket(self):
+        'Is the group-name is added when another group name is convolved?'
+        self.assert_subject('[faux] [other] Ethel the Frog',
+                            '[Fwd: [other] Ethel the Frog]')
