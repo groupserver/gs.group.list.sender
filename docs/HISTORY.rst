@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.2 (2015-09-21)
+------------------
+
+* Using ``subject`` rather than ``Subject`` in ``mailto:`` URIs
+
 1.2.1 (2015-04-07)
 ------------------
 
