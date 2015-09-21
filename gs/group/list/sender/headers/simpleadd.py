@@ -12,7 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ############################################################################
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 from email.header import Header
 from email.utils import formataddr
 try:
@@ -131,7 +131,7 @@ header.
         desc = 'Leave {0}'.format(name)
 
         emailAddr = self.listInfo.get_property('mailto')
-        addr = 'mailto:{0}?Subject=Unsubscribe'.format(emailAddr)
+        addr = 'mailto:{0}?subject=Unsubscribe'.format(emailAddr)
 
         retval = formataddr((desc, addr))
         return retval
@@ -155,7 +155,7 @@ allows someone to join a group, as described in :rfc:`2369#section-3.3`.
         desc = 'Join {0}'.format(name)
 
         emailAddr = self.listInfo.get_property('mailto')
-        addr = 'mailto:{0}?Subject=Subscribe'.format(emailAddr)
+        addr = 'mailto:{0}?subject=Subscribe'.format(emailAddr)
 
         retval = formataddr((desc, addr))
         return retval

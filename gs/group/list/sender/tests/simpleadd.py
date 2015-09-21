@@ -12,7 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ############################################################################
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 from mock import patch
 from unittest import TestCase
 from gs.group.list.sender.headers.simpleadd import (
@@ -79,7 +79,7 @@ class TestStaticHeaders(TestCase):
         lu = ListUnsubscribe(FauxGroup, FauxRequest)
         r = lu.modify_header()
         expected = 'Leave Faux Group '\
-                   '<mailto:faux@groups.example.com?Subject=Unsubscribe>'
+                   '<mailto:faux@groups.example.com?subject=Unsubscribe>'
         self.assertEqual(expected, r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
@@ -92,7 +92,7 @@ class TestStaticHeaders(TestCase):
         ls = ListSubscribe(FauxGroup, FauxRequest)
         r = ls.modify_header()
         expected = 'Join Faux Group '\
-                   '<mailto:faux@groups.example.com?Subject=Subscribe>'
+                   '<mailto:faux@groups.example.com?subject=Subscribe>'
         self.assertEqual(expected, r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
