@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,24 +14,8 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals
 from email.utils import parseaddr
-from enum import Enum
-from zope.cachedescriptors.property import Lazy
+from gs.group.list.base import (replyto, ReplyTo)
 from .simpleadd import SimpleAddHeader
-
-
-class ReplyTo(Enum):
-    '''An enumeration of the different reply-to settings.'''
-    # __order__ is only needed in 2.x
-    __order__ = 'author group both'
-
-    #: The replies go to the author
-    author = 0
-
-    #: The replies go to the group
-    group = 1
-
-    #: The replies go to the author and the group
-    both = 2
 
 
 class ReplyToHeader(SimpleAddHeader):
@@ -45,16 +29,6 @@ class ReplyToHeader(SimpleAddHeader):
 Group administrators sometimes want replies to email messages from a group
 to go to odd places. This class sets the :mailheader:`Reply-To` header to
 best reflect these odd views.'''
-    @Lazy
-    def replyTo(self):
-        r = self.listInfo.get_property('replyto', 'group')
-        if r == 'sender':
-            retval = ReplyTo.author
-        elif r == 'both':
-            retval = ReplyTo.both
-        else:
-            retval = ReplyTo.group
-        return retval
 
     def modify_header(self, email):
         '''Generate the content for the :mailheader:`Reply-To` header
@@ -79,9 +53,10 @@ best reflect these odd views.'''
         authorReplyTo = parseaddr(email.get('Reply-To',
                                   email.get('From')))[1]
         groupReplyTo = parseaddr(self.listInfo.get_property('mailto'))[1]
-        if self.replyTo == ReplyTo.author:
+        replyTo = replyto(self.listInfo)
+        if replyTo == ReplyTo.author:
             retval = authorReplyTo
-        elif self.replyTo == ReplyTo.group:
+        elif replyTo == ReplyTo.group:
             retval = groupReplyTo
         else:
             addrs = [a for a in [authorReplyTo, groupReplyTo] if a]

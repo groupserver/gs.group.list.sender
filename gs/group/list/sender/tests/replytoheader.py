@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,49 +15,12 @@
 from __future__ import absolute_import, unicode_literals
 from mock import patch
 from unittest import TestCase
-from gs.group.list.sender.headers.replyto import (ReplyToHeader, ReplyTo)
+from gs.group.list.sender.headers.replyto import ReplyToHeader
 from .faux import (FauxGroup, FauxRequest, get_email, )
 
 
 class TestReplyToHeader(TestCase):
     'Test the reply-to header class'
-
-    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
-    def test_reply_to_sender(self, IGSMailingListInfo):
-        gp = IGSMailingListInfo.return_value.get_property
-        gp.return_value = 'sender'
-
-        rth = ReplyToHeader(FauxGroup, FauxRequest)
-        r = rth.replyTo
-        self.assertEqual(ReplyTo.author, r)
-
-    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
-    def test_reply_to_both(self, IGSMailingListInfo):
-        gp = IGSMailingListInfo.return_value.get_property
-        gp.return_value = 'both'
-
-        rth = ReplyToHeader(FauxGroup, FauxRequest)
-        r = rth.replyTo
-        self.assertEqual(ReplyTo.both, r)
-
-    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
-    def test_reply_to_group(self, IGSMailingListInfo):
-        gp = IGSMailingListInfo.return_value.get_property
-        gp.return_value = 'group'
-
-        rth = ReplyToHeader(FauxGroup, FauxRequest)
-        r = rth.replyTo
-        self.assertEqual(ReplyTo.group, r)
-
-    @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
-    def test_reply_to_group_none(self, IGSMailingListInfo):
-        'Ensure that reply-to-group is the default'
-        gp = IGSMailingListInfo.return_value.get_property
-        gp.return_value = None
-
-        rth = ReplyToHeader(FauxGroup, FauxRequest)
-        r = rth.replyTo
-        self.assertEqual(ReplyTo.group, r)
 
     @patch('gs.group.list.sender.headers.simpleadd.IGSGroupInfo')
     @patch('gs.group.list.sender.headers.simpleadd.IGSMailingListInfo')
