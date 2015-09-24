@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.3.0 (2015-09-24)
+------------------
+
+* Moving the ``ReplyTo`` class to `gs.group.list.base`_
+
+.. _gs.group.list.base:
+   https://github.com/groupserver/gs.group.list.base
+
 1.2.2 (2015-09-21)
 ------------------
 
