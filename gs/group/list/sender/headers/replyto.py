@@ -56,9 +56,9 @@ best reflect these odd views.'''
         replyTo = replyto(self.listInfo)
         if replyTo == ReplyTo.author:
             retval = authorReplyTo
-        elif replyTo == ReplyTo.group:
-            retval = groupReplyTo
-        else:
+        elif replyTo == ReplyTo.both:
             addrs = [a for a in [authorReplyTo, groupReplyTo] if a]
             retval = ', '.join(addrs)
+        else:  # ReplyTo.group
+            retval = groupReplyTo
         return retval
