@@ -17,7 +17,7 @@ import os
 from setuptools import setup, find_packages
 from version import get_version
 
-name='gs.group.list.sender'
+name = 'gs.group.list.sender'
 version = get_version()
 
 with codecs.open('README.rst', encoding='utf-8') as f:
